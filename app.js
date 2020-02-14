@@ -25,6 +25,7 @@ var connection = mysql.createConnection({
 
 app.get('/ping', function(request, response){
     response.send(new Date().toISOString())
+    return
 })
 
 app.post('/delcr', function(request, response){
@@ -76,6 +77,12 @@ app.post('/results', function(request, response){
                 dat = dat.toISOString().slice(0,10)
                 results[i].data_urodzenia = dat
             }
+            if(results[i].data_od != undefined){
+                var dat = results[i].data_od
+                dat.setDate(dat.getDate() + 1)
+                dat = dat.toISOString().slice(0,10)
+                results[i].data_od = dat
+            }
         }
         response.send(200, results)
         return
@@ -90,19 +97,33 @@ app.post('/modcr', function(request, response){
         }
         else{
             connection.query('select id_członka_sztabu from sztab where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '" and rola = "' + request.body.rola + '"', function(error, results2, fields){
+
                 if(results2.length == 0){
                     response.send(403, "Nie znaleziono członka sztabu.")
                     return
                 }
                 else{
-                    connection.query('insert into wspolpraca(data_rozpoczęcia, zawodnik_id_gracza, sztab_id_członka_sztabu) values("' + request.body.dat + '", ' + results[0].id_gracza + ', ' + results2[0].id_członka_sztabu + ')', function(error,results3,fields){
+                    connection.query('select * from wspolpraca where data_rozpoczęcia = "' + request.body.dat +'" and zawodnik_id_gracza = ' + results[0].id_gracza + ' and sztab_id_członka_sztabu = ' + results2[0].id_członka_sztabu, function(error, results5, fields){
                         if (error) { 
                             console.error(error)
                             response.send(403, "Podano dane w niewłaściwym formacie.")
                             return
                         }
-                        response.send(200, "Wprowadzono współpracę.")
-                        return
+                        if(results5.length > 0){
+                            response.send(403, "Podana współpraca już istnieje.")
+                            return
+                        }
+                        else{
+                            connection.query('insert into wspolpraca(data_rozpoczęcia, zawodnik_id_gracza, sztab_id_członka_sztabu) values("' + request.body.dat + '", ' + results[0].id_gracza + ', ' + results2[0].id_członka_sztabu + ')', function(error,results3,fields){
+                                if (error) { 
+                                    console.error(error)
+                                    response.send(403, "Podano dane w niewłaściwym formacie.")
+                                    return
+                                }
+                                response.send(200, "Wprowadzono współpracę.")
+                                return
+                            })
+                        }
                     })
                 }
             })
@@ -131,6 +152,7 @@ app.post('/modcr2', function(request, response){
                         }
                         if(results3.affectedRows == 0){
                             response.send(403, "Nie znaleziono współpracy lub podano błędną datę zakończenia.")
+                            return
                         }
                         response.send(200, "Zmodyfikowano współpracę.")
                         return
@@ -142,14 +164,27 @@ app.post('/modcr2', function(request, response){
 })
 
 app.post('/inscr', function(request, response){
-    connection.query('insert into sztab(imie, nazwisko, rola) values("' + request.body.imie + '", "' + request.body.nazwisko + '", "' + request.body.rola + '")', function(error, results, fields){
+    connection.query('select * from sztab where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"', function(error, results,fields){
         if (error) { 
             console.error(error)
             response.send(403, "Podano dane w niewłaściwym formacie.")
             return
         }
-        response.send(200, "Wprowadzono członka sztabu.")
-        return
+        if(results.length > 0){
+            response.send(403, "Członek sztabu o podanym imieniu i nazwisku już istnieje.")
+            return
+        }
+        else{
+            connection.query('insert into sztab(imie, nazwisko, rola) values("' + request.body.imie + '", "' + request.body.nazwisko + '", "' + request.body.rola + '")', function(error, results, fields){
+                if (error) { 
+                    console.error(error)
+                    response.send(403, "Podano dane w niewłaściwym formacie.")
+                    return
+                }
+                response.send(200, "Wprowadzono członka sztabu.")
+                return
+            })
+        }
     })
 })
 
@@ -178,7 +213,7 @@ app.post('/modpa', function(request, response){
             return
         }
         if(results.length == 0){
-            response.send(403, "Dany zawodnik nie grał w tym turnieju")
+            response.send(403, "Zawodnik " + + request.body.imie + ' ' + request.body.nazwisko + " nie grał w tym turnieju.")
             return
         }
         else{
@@ -190,7 +225,7 @@ app.post('/modpa', function(request, response){
                     return
                 }
                 if(results2.length == 0){
-                    response.send(403, "Dany zawodnik nie grał w tym turnieju")
+                    response.send(403, "Zawodnik " + request.body.imie2 + ' ' + request.body.nazwisko2 + " nie grał w tym turnieju.")
                     return
                 }
                 else{
@@ -201,7 +236,7 @@ app.post('/modpa', function(request, response){
                             return
                         }
                         if(results3.length == 0){
-                            response.send(403, "Dany zawodnik nie grał w tym turnieju")
+                            response.send(403, "Zawodnik " + + request.body.imie + ' ' + request.body.nazwisko + " nie grał w tym turnieju.")
                             return
                         }
                         else{
@@ -212,18 +247,31 @@ app.post('/modpa', function(request, response){
                                     return
                                 }
                                 if(results4.length == 0){
-                                    response.send(403, "Dany zawodnik nie grał w tym turnieju")
+                                    response.send(403, "Zawodnik " + request.body.imie2 + ' ' + request.body.nazwisko2 + " nie grał w tym turnieju.")
                                     return
                                 }
                                 else{
-                                    connection.query('update deblowy set Deblowy_id_udzialu_deblowego = ' + results3[0].id_udzialu_deblowego + ' where id_udzialu_deblowego = ' + results4[0].id_udzialu_deblowego, function(error, results5, fields){
+                                    connection.query('select * from deblowy where (udzial_id_udzialu = ' + results3[0].id_udzialu_deblowego + ' or udzial_id_udzialu = ' + results4[0].id_udzialu_deblowego + ') and Deblowy_id_udzialu_deblowego is not null', function(error, results7, fields){
+                                        if (error) { 
+                                            console.error(error)
+                                            response.send(403, "Wystąpił błąd wewnętrzny.")
+                                            return
+                                        }
+                                        if(results.length > 0){
+                                            response.send(403, "Podany zawodnik ma już parę w tym turnieju.")
+                                            return
+                                        }
+                                        else{
+                                            connection.query('update deblowy set Deblowy_id_udzialu_deblowego = ' + results3[0].id_udzialu_deblowego + ' where id_udzialu_deblowego = ' + results4[0].id_udzialu_deblowego, function(error, results5, fields){
 
+                                            })
+                                            connection.query('update deblowy set Deblowy_id_udzialu_deblowego = ' + results4[0].id_udzialu_deblowego + ' where id_udzialu_deblowego = ' + results3[0].id_udzialu_deblowego, function(error, results5, fields){
+        
+                                            })
+                                            response.send(200, "Ustawiono parę deblową w podanym turnieju")
+                                            return
+                                        }
                                     })
-                                    connection.query('update deblowy set Deblowy_id_udzialu_deblowego = ' + results4[0].id_udzialu_deblowego + ' where id_udzialu_deblowego = ' + results3[0].id_udzialu_deblowego, function(error, results5, fields){
-
-                                    })
-                                    response.send(200, "Ustawiono parę deblową w podanym turnieju")
-                                    return
                                 }
                             })
                         }
@@ -235,101 +283,170 @@ app.post('/modpa', function(request, response){
 })
 
 app.post('/inspl', function(request, response){
-    connection.query('INSERT INTO zawodnik(imie, nazwisko, narodowość, data_urodzenia, wzrost, preferowana_ręka, punkty_singlowe, punkty_deblowe, płeć) VALUES("' + request.body.imie + '", "' + request.body.nazwisko + '", "' + request.body.kraj + '", "' + 
-    request.body.dat + '", ' + request.body.wzrost +', "' + request.body.reka + '", 0, 0, "' + request.body.plec + '")', function(error, results, fields){
+    connection.query('select * from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"', function(error, results3, fields){
         if (error) { 
             console.error(error)
             response.send(403, "Podano dane w niewłaściwym formacie.")
             return
         }
-        connection.query('select count(*) as liczba from zawodnik where płeć = "' + request.body.plec + '"', function(error, results,fields){
-            connection.query('select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"',function(error, results3,fields){
-                if(request.body.plec == "kobieta"){
-                    connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
-                    results[0].liczba + ', "singlowy kobiet", ' + results3[0].id_gracza + ')', function(error, results2, fields){
-                    })
-                    connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
-                    results[0].liczba + ', "deblowy kobiet", ' + results3[0].id_gracza + ')', function(error, results2, fields){
-                    })
-                }
-                else{
-                    connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
-                    results[0].liczba + ', "singlowy mężczyzn", ' + results3[0].id_gracza + ')', function(error, results2, fields){
-                    })
-                    connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
-                    results[0].liczba + ', "deblowy mężczyzn", ' + results3[0].id_gracza + ')', function(error, results2, fields){
-                    })
-                }          
-            })
-        })
-        response.send(200, "Wprowadzono zawodnika.")
-        return
-    })
-})
-
-app.post('/inspa', function(request, response){
-    connection.query('select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"', function(error,results,fields){
-        if (error) { 
-            console.error(error)
-            response.send(403, "Podano dane w niewłaściwym formacie.")
-            return
-        }
-        if(results.length == 0){
-            response.send(403, "Nie znaleziono podanego zawodnika.")
+        if(results3.length > 0){
+            response.send(403, "Zawodnik o podanym imieniu i nazwisku już istnieje.")
             return
         }
         else{
-            connection.query('select * from turniej where nazwa = "' + request.body.nazwa + '" and rok = ' + request.body.rok, function(error, results2, fields){
+            connection.query('INSERT INTO zawodnik(imie, nazwisko, narodowość, data_urodzenia, wzrost, preferowana_ręka, punkty_singlowe, punkty_deblowe, płeć) VALUES("' + request.body.imie + '", "' + request.body.nazwisko + '", "' + request.body.kraj + '", "' + 
+            request.body.dat + '", ' + request.body.wzrost +', "' + request.body.reka + '", 0, 0, "' + request.body.plec + '")', function(error, results, fields){
                 if (error) { 
                     console.error(error)
                     response.send(403, "Podano dane w niewłaściwym formacie.")
                     return
                 }
-                if(results.length == 0){
-                    response.send(403, "Nie znaleziono podanego turnieju.")
+                connection.query('select count(*) as liczba from zawodnik where płeć = "' + request.body.plec + '"', function(error, results,fields){
+                    connection.query('select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"',function(error, results3,fields){
+                        if(request.body.plec == "kobieta"){
+                            connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
+                            results[0].liczba + ', "singlowy kobiet", ' + results3[0].id_gracza + ')', function(error, results2, fields){
+                            })
+                            connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
+                            results[0].liczba + ', "deblowy kobiet", ' + results3[0].id_gracza + ')', function(error, results2, fields){
+                            })
+                        }
+                        else{
+                            connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
+                            results[0].liczba + ', "singlowy mężczyzn", ' + results3[0].id_gracza + ')', function(error, results2, fields){
+                            })
+                            connection.query('insert into pozycja(data_od, pozycja, ranking_rodzaj_rankingu, zawodnik_id_gracza) values(current_date(), ' + 
+                            results[0].liczba + ', "deblowy mężczyzn", ' + results3[0].id_gracza + ')', function(error, results2, fields){
+                            })
+                        }          
+                    })
+                })
+                response.send(200, "Wprowadzono zawodnika.")
+                return
+            })
+        }
+    })
+})
+
+app.post('/inspa', function(request, response){
+    connection.query('select * from udzial inner join ' + request.body.sindeb + ' on udzial.id_udzialu = ' + request.body.sindeb + '.udzial_id_udzialu where (zawodnik_id_gracza = (select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '") or zawodnik_id_gracza2 = (select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"))' + ' and turniej_nazwa = "' + request.body.nazwa + '" and turniej_rok = ' + request.body.rok, function(error, results11, fields){
+        if (error) { 
+            console.error(error)
+            response.send(403, "Podano dane w niewłaściwym formacie.")
+            return
+        }
+        if(results11.length > 0){
+            response.send(403, "W systemie jest już udział zawodnika " + request.body.imie + " " + request.body.nazwisko + " w tym turnieju")
+            return
+        }
+        else{
+            connection.query('select * from udzial inner join ' + request.body.sindeb + ' on udzial.id_udzialu = ' + request.body.sindeb + '.udzial_id_udzialu where (zawodnik_id_gracza = (select id_gracza from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '") or zawodnik_id_gracza2 = (select id_gracza from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '"))' + ' and turniej_nazwa = "' + request.body.nazwa + '" and turniej_rok = ' + request.body.rok, function(error, results14, fields){
+                if (error) { 
+                    console.error(error)
+                    response.send(403, "Podano dane w niewłaściwym formacie.")
+                    return
+                }
+                if(results14.length > 0){
+                    response.send(403, "W systemie jest już udział zawodnika " + request.body.imie2 + " " + request.body.nazwisko2 + " w tym turnieju")
                     return
                 }
                 else{
-                    if(request.body.roz != ""){
-                        connection.query('insert into udzial(rozstawienie, rezultat, liczba_zdobytych_punktów, turniej_nazwa, turniej_rok, zawodnik_id_gracza) values(' + 
-                        request.body.roz + ', "' + request.body.rez + '", ' + request.body.punkty + ', "' + request.body.nazwa + '", ' + request.body.rok + ', ' + results[0].id_gracza + ')', function(error, results2, fields){
-                            if (error) { 
-                                console.error(error)
-                                response.send(403, "Podano dane w niewłaściwym formacie.")
-                                return
-                            }
-                            connection.query('CALL calc_points(' + results[0].id_gracza + ')', function(error, results2, fields){
-                            })
-                            connection.query('call update_rank()', function(error, results2, fields){
-                            })
-                            connection.query('select id_udzialu from udzial where zawodnik_id_gracza = ' + results[0].id_gracza + ' and turniej_nazwa = "' + 
-                            request.body.nazwa + '" and turniej_rok = ' + request.body.rok, function(error,results3,fields){
-                                connection.query('insert into ' + request.body.sindeb + '(udzial_id_udzialu) values(' + results3[0].id_udzialu + ')', function(error,results4, fields){
+                    connection.query('select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"', function(error,results,fields){
+                        if (error) { 
+                            console.error(error)
+                            response.send(403, "Podano dane w niewłaściwym formacie.")
+                            return
+                        }
+                        if(results.length == 0){
+                            response.send(403, "Nie znaleziono zawodnika " + request.body.imie + " " + request.body.nazwisko)
+                            return
+                        }
+                        else{
+                            connection.query('select id_gracza from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '"', function(error, results12, fields){
+                                if (error) { 
+                                    console.error(error)
+                                    response.send(403, "Podano dane w niewłaściwym formacie.")
+                                    return
+                                }
+                                if(request.body.sindeb == "deblowy"){
+                                    if(results12.length == 0){
+                                        response.send(403, "Nie znaleziono zawodnika " + request.body.imie2 + " " + request.body.nazwisko2)
+                                        return
+                                    }
+                                }
+                                var x
+                                if(results12.length == 0){
+                                    x = null
+                                }
+                                else{
+                                    x = results12[0].id_gracza
+                                }
+                                connection.query('select * from turniej where nazwa = "' + request.body.nazwa + '" and rok = ' + request.body.rok, function(error, results2, fields){
+                                    if (error) { 
+                                        console.error(error)
+                                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                                        return
+                                    }
+                                    if(results2.length == 0){
+                                        response.send(403, "Nie znaleziono podanego turnieju.")
+                                        return
+                                    }
+                                    else{
+                                        if(request.body.roz != ""){
+                                            connection.query('insert into udzial(rozstawienie, rezultat, liczba_zdobytych_punktów, turniej_nazwa, turniej_rok, zawodnik_id_gracza, zawodnik_id_gracza2) values(' + 
+                                            request.body.roz + ', "' + request.body.rez + '", ' + request.body.punkty + ', "' + request.body.nazwa + '", ' + request.body.rok + ', ' + results[0].id_gracza + ', ' + x + ')', function(error, results2, fields){
+                                                if (error) { 
+                                                    console.error(error)
+                                                    response.send(403, "Podano dane w niewłaściwym formacie.")
+                                                    return
+                                                }
+                                                connection.query('select id_udzialu from udzial where zawodnik_id_gracza = ' + results[0].id_gracza + ' and turniej_nazwa = "' + 
+                                                request.body.nazwa + '" and turniej_rok = ' + request.body.rok + ' order by id_udzialu desc', function(error,results3,fields){
+                                                    connection.query('insert into ' + request.body.sindeb + '(udzial_id_udzialu) values(' + results3[0].id_udzialu + ')', function(error,results4, fields){
+                                                        connection.query('CALL calc_points(' + results[0].id_gracza + ')', function(error, results2, fields){
+                                                        })
+                                                        if(x != null){
+                                                            connection.query('CALL calc_points(' + x + ')', function(error, results2, fields){
+                                                            })
+                                                        }
+                                                        connection.query('call update_rank()', function(error, results2, fields){
+                                                        })
+                                                    })
+                                                })
+                                                response.send(200, "Wstawiono udział.")
+                                                return
+                                            })
+                                        }
+                                        else{
+                                            connection.query('insert into udzial(rezultat, liczba_zdobytych_punktów, turniej_nazwa, turniej_rok, zawodnik_id_gracza, zawodnik_id_gracza2) values("' + request.body.rez + '", ' + 
+                                            request.body.punkty + ', "' + request.body.nazwa + '", ' + request.body.rok + ', ' + results[0].id_gracza + ', ' + x + ')', function(error, results2, fields){
+                                                if (error) { 
+                                                    console.error(error)
+                                                    response.send(403, "Podano dane w niewłaściwym formacie.")
+                                                    return
+                                                }
+                                                connection.query('select id_udzialu from udzial where zawodnik_id_gracza = ' + results[0].id_gracza + ' and turniej_nazwa = "' + 
+                                                request.body.nazwa + '" and turniej_rok = ' + request.body.rok + ' order by id_udzialu desc', function(error,results3,fields){
+                                                    connection.query('insert into ' + request.body.sindeb + '(udzial_id_udzialu) values(' + results3[0].id_udzialu + ')', function(error,results4, fields){
+                                                        connection.query('CALL calc_points(' + results[0].id_gracza + ')', function(error, results2, fields){
+                                                        })
+                                                        if(x != null){
+                                                            connection.query('CALL calc_points(' + x + ')', function(error, results2, fields){
+                                                            })
+                                                        }
+                                                        connection.query('call update_rank()', function(error, results2, fields){
+                                                        })
+                                                    })
+                                                })
+                                                response.send(200, "Wstawiono udział.")
+                                                return
+                                            })
+                                        }
+                                    }
                                 })
                             })
-                            response.send(200, "Wstawiono udział.")
-                        })
-                    }
-                    else{
-                        connection.query('insert into udzial(rezultat, liczba_zdobytych_punktów, turniej_nazwa, turniej_rok, zawodnik_id_gracza) values("' + request.body.rez + '", ' + 
-                        request.body.punkty + ', "' + request.body.nazwa + '", ' + request.body.rok + ', ' + results[0].id_gracza + ')', function(error, results2, fields){
-                            if (error) { 
-                                console.error(error)
-                                response.send(403, "Podano dane w niewłaściwym formacie.")
-                                return
-                            }
-                            connection.query('CALL calc_points(' + results[0].id_gracza + ')', function(error, results2, fields){
-                            })
-                            connection.query('call update_rank()', function(error, results2, fields){
-                            })
-                            connection.query('select id_udzialu from udzial where zawodnik_id_gracza = ' + results[0].id_gracza + ' and turniej_nazwa = "' + 
-                            request.body.nazwa + '" and turniej_rok = ' + request.body.rok, function(error,results3,fields){
-                                connection.query('insert into ' + request.body.sindeb + '(udzial_id_udzialu) values(' + results3[0].id_udzialu + ')', function(error,results4, fields){
-                                })
-                            })
-                            response.send(200, "Wstawiono udział.")
-                        })
-                    }
+                        }
+                    })
                 }
             })
         }
@@ -338,111 +455,197 @@ app.post('/inspa', function(request, response){
 
 
 app.post('/insto', function(request, response){
-    if(request.body.data2 != ""){
-        connection.query('insert into turniej values("' + request.body.nazwa + '", ' + request.body.rok + ', "' + request.body.ranga + '", "' + request.body.naw + 
-        '", "' + request.body.miasto + '", "' + request.body.kraj + '", ' + request.body.pula + ', "' + request.body.data1 + '", "' + request.body.data2 + '")', function(error,results,fields){
-            if (error) { 
-                console.error(error)
-                response.send(403, "Podano dane w niewłaściwym formacie.")
-                return
-            }
-            response.send(200, "Wstawiono turniej")
-            return
-        })
-    }
-    else{
-        connection.query('insert into turniej(nazwa, rok, ranga, nawierzchnia, miasto, kraj, pula_nagród, data_rozpoczęcia) values("' + request.body.nazwa + '", ' + request.body.rok + ', "' + request.body.ranga + '", "' + request.body.naw + 
-        '", "' + request.body.miasto + '", "' + request.body.kraj + '", ' + request.body.pula + ', "' + request.body.data1 + '")', function(error,results,fields){
-            if (error) { 
-                console.error(error)
-                response.send(403, "Podano dane w niewłaściwym formacie.")
-                return
-            }
-            response.send(200, "Wstawiono turniej")
-            return
-        })
-    }
-})
-
-app.post('/insma', function(request, response){
     connection.query('select * from turniej where nazwa = "' + request.body.nazwa + '" and rok = ' + request.body.rok, function(error, results, fields){
-        if (error) { 
-            console.error(error)
-            response.send(403, "Podano dane w niewłaściwym formacie.")
-            return
-        }
-        if(results.length == undefined){
-            response.send(403, "Nie znaleiono podanego turnieju")
+        if(results.length > 0){
+            response.send(403, "Podany turniej już istnieje.")
             return
         }
         else{
-            connection.query('select * from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"', function(error, results, fields){
-                if (error) { 
-                    console.error(error)
-                    response.send(403, "Podano dane w niewłaściwym formacie.")
+            if(request.body.data2 != ""){
+                connection.query('insert into turniej values("' + request.body.nazwa + '", ' + request.body.rok + ', "' + request.body.ranga + '", "' + request.body.naw + 
+                '", "' + request.body.miasto + '", "' + request.body.kraj + '", ' + request.body.pula + ', "' + request.body.data1 + '", "' + request.body.data2 + '")', function(error,results,fields){
+                    if (error) { 
+                        console.error(error)
+                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                        return
+                    }
+                    response.send(200, "Wstawiono turniej")
                     return
-                }
-                if(results.length == undefined){
-                    response.send(403, "Nie znaleziono podanego zawodnika")
+                })
+            }
+            else{
+                connection.query('insert into turniej(nazwa, rok, ranga, nawierzchnia, miasto, kraj, pula_nagród, data_rozpoczęcia) values("' + request.body.nazwa + '", ' + request.body.rok + ', "' + request.body.ranga + '", "' + request.body.naw + 
+                '", "' + request.body.miasto + '", "' + request.body.kraj + '", ' + request.body.pula + ', "' + request.body.data1 + '")', function(error,results,fields){
+                    if (error) { 
+                        console.error(error)
+                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                        return
+                    }
+                    response.send(200, "Wstawiono turniej")
                     return
-                }
-                else{
-                    connection.query('select * from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '"', function(error, results, fields){
-                        if (error) { 
-                            console.error(error)
-                            response.send(403, "Podano dane w niewłaściwym formacie.")
-                            return
-                        }
-                        if(results.length == undefined){
-                            response.send(403, "Nie znaleiono podanego zawodnika")
-                            return
-                        }
-                        else{
-                            connection.query('select * from udzial join zawodnik on zawodnik_id_gracza = id_gracza right outer join ' + request.body.sindeb + ' on id_udzialu = udzial_id_udzialu where turniej_nazwa = "' + request.body.nazwa +
-                                '" and turniej_rok = ' + request.body.rok + ' and id_gracza = (select id_gracza from zawodnik where imie = "' + request.body.imie + 
-                                '" and nazwisko = "' + request.body.nazwisko + '")', function(error, results6, fields){
-                                if (error) { 
-                                    console.error(error)
-                                    response.send(403, "Podano dane w niewłaściwym formacie.")
-                                    return
-                                }
-                                if(results6.length == undefined){
-                                    response.send(403, "Zawodnik nie grał w danym turnieju.")
-                                    return
-                                }
-                                else{
-                                    connection.query('select * from udzial join zawodnik on zawodnik_id_gracza = id_gracza right outer join ' + request.body.sindeb + ' on id_udzialu = udzial_id_udzialu where turniej_nazwa = "' + request.body.nazwa +
-                                        '" and turniej_rok = ' + request.body.rok + ' and id_gracza = (select id_gracza from zawodnik where imie = "' + request.body.imie2 + 
-                                        '" and nazwisko = "' + request.body.nazwisko2 + '")', function(error, results7, fields){
-                                        if (error) { 
-                                            console.error(error)
-                                            response.send(403, "Podano dane w niewłaściwym formacie.")
-                                            return
-                                        }
-                                        if(results7.length == undefined){
-                                            response.send(403, "Zawodnik nie grał w danym turnieju.")
-                                            return
-                                        }
-                                        else{
-                                            connection.query('insert into mecz values("' + request.body.dat + '", "' + request.body.etap + '", "' + request.body.wynik + '", "' + request.body.sindeb + '", ' + results6[0].id_udzialu + ', ' + results7[0].id_udzialu + ', "' + request.body.nazwa + '"' + ')', function(error, results, fields){
-                                                if (error) { 
-                                                    console.error(error)
-                                                    response.send(403, "Podano dane w niewłaściwym formacie.")
-                                                    return
-                                                }
-                                                response.send(200, "Wstawiono mecz.")
-                                                    return
-                                            })
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                    })
-                }
-            })
+                })
+            }
         }
-    })   
+    })
+})
+
+app.post('/insma', function(request, response){
+    if(request.body.imie3 == ""){
+        connection.query('select * from turniej where nazwa = "' + request.body.nazwa + '" and rok = ' + request.body.rok, function(error, results, fields){
+            if (error) { 
+                console.error(error)
+                response.send(403, "Podano dane w niewłaściwym formacie.")
+                return
+            }
+            if(results.length == 0){
+                response.send(403, "Nie znaleziono podanego turnieju")
+                return
+            }
+            else{
+                connection.query('select * from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"', function(error, results, fields){
+                    if (error) { 
+                        console.error(error)
+                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                        return
+                    }
+                    if(results.length == 0){
+                        response.send(403, "Nie znaleziono zawodnika " + request.body.imie + " " + request.body.nazwisko)
+                        return
+                    }
+                    else{
+                        connection.query('select * from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '"', function(error, results, fields){
+                            if (error) { 
+                                console.error(error)
+                                response.send(403, "Podano dane w niewłaściwym formacie.")
+                                return
+                            }
+                            if(results.length == 0){
+                                response.send(403, "Nie znaleziono zawodnika " + request.body.imie2 + " " + request.body.nazwisko2)
+                                return
+                            }
+                            else{
+                                connection.query('select * from udzial join zawodnik on zawodnik_id_gracza = id_gracza right outer join ' + request.body.sindeb + ' on id_udzialu = udzial_id_udzialu where turniej_nazwa = "' + request.body.nazwa +
+                                    '" and turniej_rok = ' + request.body.rok + ' and id_gracza = (select id_gracza from zawodnik where imie = "' + request.body.imie + 
+                                    '" and nazwisko = "' + request.body.nazwisko + '")', function(error, results6, fields){
+                                    if (error) { 
+                                        console.error(error)
+                                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                                        return
+                                    }
+                                    if(results6.length == 0){
+                                        response.send(403, "Zawodnik " + request.body.imie + " " + request.body.nazwisko + " nie grał w danym turnieju.")
+                                        return
+                                    }
+                                    else{
+                                        connection.query('select * from udzial join zawodnik on zawodnik_id_gracza = id_gracza right outer join ' + request.body.sindeb + ' on id_udzialu = udzial_id_udzialu where turniej_nazwa = "' + request.body.nazwa +
+                                            '" and turniej_rok = ' + request.body.rok + ' and id_gracza = (select id_gracza from zawodnik where imie = "' + request.body.imie2 + 
+                                            '" and nazwisko = "' + request.body.nazwisko2 + '")', function(error, results7, fields){
+                                            if (error) { 
+                                                console.error(error)
+                                                response.send(403, "Podano dane w niewłaściwym formacie.")
+                                                return
+                                            }
+                                            if(results7.length == 0){
+                                                response.send(403, "Zawodnik " + request.body.imie2 + " " + request.body.nazwisko2 + " nie grał w danym turnieju.")
+                                                return
+                                            }
+                                            else{
+                                                connection.query('select * from mecz where data_meczu = "' + request.body.dat + '" and udzial_id_udzialu1 = ' + results6[0].id_udzialu + ' and udzial_id_udzialu2 = ' + results7[0].id_udzialu, function(error, results9, fields){
+                                                    if (error) { 
+                                                        console.error(error)
+                                                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                                                        return
+                                                    }
+                                                    if(results9.length > 0){
+                                                        response.send(403, "Podany mecz już znajduje się w systemie.")
+                                                        return
+                                                    }
+                                                    else{
+                                                        connection.query('insert into mecz values("' + request.body.dat + '", "' + request.body.etap + '", "' + request.body.wynik + '", "' + request.body.sindeb + '", ' + results6[0].id_udzialu + ', ' + results7[0].id_udzialu + ', "' + request.body.nazwa + '"' + ')', function(error, results, fields){
+                                                            if (error) { 
+                                                                console.error(error)
+                                                                response.send(403, "Podano dane w niewłaściwym formacie.")
+                                                                return
+                                                            }
+                                                            response.send(200, "Wstawiono mecz.")
+                                                                return
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })   
+    }
+    else{
+        connection.query('select * from turniej where nazwa = "' + request.body.nazwa + '" and rok = ' + request.body.rok, function(error, results, fields){
+            if (error) { 
+                console.error(error)
+                response.send(403, "Podano dane w niewłaściwym formacie.")
+                return
+            }
+            if(results.length == 0){
+                response.send(403, "Nie znaleziono podanego turnieju")
+                return
+            }
+            else{
+                connection.query('select * from udzial join deblowy on udzial.id_udzialu = deblowy.udzial_id_udzialu where turniej_nazwa = "' + request.body.nazwa + '" and turniej_rok = ' + request.body.rok + ' and zawodnik_id_gracza in ((select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"), (select id_gracza from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '")) and zawodnik_id_gracza2 in ' + '((select id_gracza from zawodnik where imie = "' + request.body.imie + '" and nazwisko = "' + request.body.nazwisko + '"), (select id_gracza from zawodnik where imie = "' + request.body.imie2 + '" and nazwisko = "' + request.body.nazwisko2 + '"))', function(error, results6, fields){
+                    if (error) { 
+                        console.error(error)
+                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                        return
+                    }
+                    if(results6.length == 0){
+                        response.send(403, "Podana para deblowa nie grała w tym turnieju.")
+                        return
+                    }
+                    else{
+                        connection.query('select * from udzial join deblowy on udzial.id_udzialu = deblowy.udzial_id_udzialu where turniej_nazwa = "' + request.body.nazwa + '" and turniej_rok = ' + request.body.rok + ' and zawodnik_id_gracza in ((select id_gracza from zawodnik where imie = "' + request.body.imie3 + '" and nazwisko = "' + request.body.nazwisko3 + '"), (select id_gracza from zawodnik where imie = "' + request.body.imie4 + '" and nazwisko = "' + request.body.nazwisko4 + '")) and zawodnik_id_gracza2 in ' + '((select id_gracza from zawodnik where imie = "' + request.body.imie3 + '" and nazwisko = "' + request.body.nazwisko3 + '"), (select id_gracza from zawodnik where imie = "' + request.body.imie4 + '" and nazwisko = "' + request.body.nazwisko4 + '"))', function(error, results7, fields){
+                            if (error) { 
+                                console.error(error)
+                                response.send(403, "Podano dane w niewłaściwym formacie.")
+                                return
+                            }
+                            if(results7.length == 0){
+                                response.send(403, "Podana para deblowa nie grała w tym turnieju.")
+                                return
+                            }
+                            else{            
+                                connection.query('select * from mecz where data_meczu = "' + request.body.dat + '" and udzial_id_udzialu1 in (' + results6[0].id_udzialu + ', ' + results7[0].id_udzialu + ') and udzial_id_udzialu2 in (' + results7[0].id_udzialu + ', ' + results6[0].id_udzialu + ')', function(error, results9, fields){
+                                    if (error) { 
+                                        console.error(error)
+                                        response.send(403, "Podano dane w niewłaściwym formacie.")
+                                        return
+                                    }
+                                    if(results9.length > 0){
+                                        response.send(403, "Podany mecz już znajduje się w systemie.")
+                                        return
+                                    }
+                                    else{
+                                        connection.query('insert into mecz values("' + request.body.dat + '", "' + request.body.etap + '", "' + request.body.wynik + '", "' + request.body.sindeb + '", ' + results6[0].id_udzialu + ', ' + results7[0].id_udzialu + ', "' + request.body.nazwa + '"' + ')', function(error, results, fields){
+                                            if (error) { 
+                                                console.error(error)
+                                                response.send(403, "Podano dane w niewłaściwym formacie.")
+                                                return
+                                            }
+                                            response.send(200, "Wstawiono mecz.")
+                                                return
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
 })
 
 app.post('/modpl', function(request, response){
@@ -480,6 +683,7 @@ app.post('/modpl', function(request, response){
         }
         if(results.affectedRows == 0){
             response.send(403, "Nie znaleziono zawodnika.")
+            return
         }
         response.send(200, "Zmodyfikowano dane zawodnika.")
         return

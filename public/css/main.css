@@ -1,3 +1,136 @@
+.BackgroundImage {
+  background-image: url("roger1.jpg");
+  background-color: #cccccc; /* Used if the image is unavailable */
+  height: 721px; /* You must set a specified height */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+button.buttonStyle {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-table;
+  font-size: 16px;
+  font-weight: bold;
+  width: 320px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+button.cancelButtonStyle {
+  background-color:#f44336;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  width: 650px;
+  margin-right: 10px;
+  margin-top: 10px;
+  left: 100px;
+  display: block;
+}
+
+button.buttonStyle1 {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  width: 320px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+button.cancelButtonStyle1 {
+  background-color:#f44336;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  width: 320px;
+  margin-right: 10px;
+  margin-top: 10px;
+  left: 100px;
+  display: block;
+}
+
+.cbx {
+  margin-left: 25px;
+  margin-top: 5px;
+}
+
+input[type='checkbox'] {
+  width:15px;
+  height:15px;
+}
+
+input[type='checkbox']:checked {
+  background-color: #2196F3;
+}
+
+br {
+  line-height: 10px;
+}
+
+table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-success {
+  margin-top: 10px;
+}
+
+.btn-danger {
+  margin-top: 10px;
+}
+
+.btn-warning {
+  margin-top: 10px;
+}
+
+.form-group {
+  margin-right: 10px;
+}
+
+.form-control {
+  width: 500px;
+}
+
+
 #StartowyOverlay {
     position: fixed; /* Sit on top of the page content */
     display: block; /* Hidden by default */
@@ -5,9 +138,7 @@
     height: 100%; /* Full height (cover the whole page) */
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    background-color: rgba(0,0,0,0); /* Black background with opacity */
     z-index: 1000; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
   }
@@ -91,7 +222,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
     z-index: 1000; /* Specify a stack order in case you're using a different order for other elements */
     cursor: pointer; /* Add a pointer on hover */
   }
@@ -282,8 +412,6 @@
   #ModOptOverlay {
     position: fixed; /* Sit on top of the page content */
     display: block; /* Hidden by default */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 100%; /* Full height (cover the whole page) */
     top: 0;
     left: 0;
     right: 0;
@@ -423,12 +551,10 @@
     z-index: 1001;
     display: block;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%,-50%);
     -ms-transform: translate(-50%,-50%);
-    background-color: white;
-    padding: 1rem 30px 1rem 30px;
 }
 
 #ResultsContent {
@@ -439,8 +565,10 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
+  width: 800px;
 }
 
 #DelToContent {
@@ -451,8 +579,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #AdvPaContent {
@@ -463,8 +592,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #InsCrContent {
@@ -475,8 +605,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #AdvToContent {
@@ -487,8 +618,10 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
+  width: 1050px;
 }
 
 #AdvCrContent {
@@ -499,8 +632,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #InsToContent {
@@ -511,19 +645,19 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #ChooseActionCrContent {
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
 }
 
@@ -531,11 +665,10 @@
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
 }
 
@@ -547,8 +680,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #AdvMatContent {
@@ -559,19 +693,19 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #ChooseActionToContent {
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
 }
 
@@ -583,8 +717,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #DelMaContent {
@@ -595,8 +730,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #InsPaContent {
@@ -607,20 +743,23 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #InsMaContent {
   z-index: 1001;
-  display: block;
+  display: inline;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
+  width: 1050px;
 }
 
 #DelPaContent {
@@ -631,8 +770,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #DelPlContent {
@@ -643,8 +783,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #ModPlContent {
@@ -655,8 +796,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #ModCrContent {
@@ -667,8 +809,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #InsPlContent {
@@ -679,19 +822,19 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #ChooseActionPaContent {
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
 }
 
@@ -699,25 +842,29 @@
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
+  top: 45%;
   left: 50%;
+  color: white;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
+  text-align: center;
 }
 
 #ModOptContent {
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 45%;
+  left: 60%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
+  color:white;
+  height: 300px;
+  width: 1000px;
 }
+
 
 #ModToContent {
   z-index: 1001;
@@ -727,8 +874,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #ModPaContent {
@@ -747,12 +895,14 @@
   z-index: 1001;
   display: block;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 45%;
+  left: 60%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
   padding: 1rem 30px 1rem 30px;
+  color:white;
+  height: 300px;
+  width: 1000px;
 }
 
 #FindPropContent {
@@ -763,8 +913,9 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
 }
 
 #AdvPlContent {
@@ -775,8 +926,10 @@
   left: 50%;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem 30px 1rem 30px;
+  border-radius: 5px;
+  width: 1050px;
 }
 
 #ModOpt {

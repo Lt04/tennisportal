@@ -11,13 +11,14 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
+        <div class="BackgroundImage">
+        </div>
         <div id="Startowy">
             <div id="StartowyOverlay"></div>
             <div id="StartowyContent" class="container col-auto">
-                <h3>Ekran startowy</h3>
                 <form>
-                    <button onclick=ShowModOpt() type="button">Zarządzaj informacjami na stronie</button> 
-			        <button onclick=ShowFindOpt() type="button">Wyszukaj informacje</button>
+                    <button class="buttonStyle" onclick=ShowModOpt() type="button">Zarządzaj informacjami na stronie</button> 
+                    <button class="buttonStyle" onclick=ShowFindOpt() type="button">Wyszukaj informacje</button>
                 </form>
             </div>
         </div>
@@ -26,12 +27,12 @@
             <div id="ModOptContent" class="container col-auto">
                 <h3>Zarządzaj informacjami o:</h3>
                 <form>
-                    <button onclick=ShowPlayModOpt() type="button">Zawodnikach</button> 
-                    <button onclick=ShowTourModOpt() type="button">Turniejach</button>
-                    <button onclick=ShowCrewModOpt() type="button">Członkach sztabu</button> 
-                    <button onclick=ShowPartModOpt() type="button">Udziale zawodników w turniejach</button>
-                    <button onclick=ShowMatchModOpt() type="button">Meczach</button> 
-                    <button onclick=HideModOpt() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle" onclick=ShowPlayModOpt() type="button">Zawodnikach</button> 
+                    <button class="buttonStyle" onclick=ShowTourModOpt() type="button">Turniejach</button>
+                    <button class="buttonStyle" onclick=ShowCrewModOpt() type="button">Członkach sztabu</button> 
+                    <button class="buttonStyle" onclick=ShowPartModOpt() type="button">Udziale zawodników w turniejach</button>
+                    <button class="buttonStyle" onclick=ShowMatchModOpt() type="button">Meczach</button> 
+                    <button class="cancelButtonStyle" onclick=HideModOpt() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -40,13 +41,13 @@
             <div id="FindOptContent" class="container col-auto">
                 <h3>Przeszukaj:</h3>
                 <form>
-                    <button onclick=ShowRankFind() type="button">Rankingi</button> 
-                    <button onclick=ShowPlayFind() type="button">Informacje o zawodnikach</button>
-                    <button onclick=ShowCrewFind() type="button">Informacje o członkach sztabu</button> 
-                    <button onclick=ShowTourFind() type="button">Turnieje</button>
-                    <button onclick=ShowMatchFind() type="button">Mecze</button>
-                    <button onclick=ShowPartFind() type="button">Udziały</button>
-                    <button onclick=HideFindOpt() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle" onclick=ShowRankFind() type="button">Rankingi</button> 
+                    <button class="buttonStyle" onclick=ShowPlayFind() type="button">Informacje o zawodnikach</button>
+                    <button class="buttonStyle" onclick=ShowCrewFind() type="button">Informacje o członkach sztabu</button> 
+                    <button class="buttonStyle" onclick=ShowTourFind() type="button">Turnieje</button>
+                    <button class="buttonStyle" onclick=ShowMatchFind() type="button">Mecze</button>
+                    <button class="buttonStyle" onclick=ShowPartFind() type="button">Udziały</button>
+                    <button class="cancelButtonStyle" onclick=HideFindOpt() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -55,35 +56,37 @@
             <div id="FindPropContent" class="container col-auto">
                 <h3>Zaznacz cechy, które chcesz wyszukać</h3>
                 <form>
-                    <div id="sink"><input type="checkbox" id="sinkk" class="form-check-input"> Ranking singlowy kobiet</div> <br>
-                    <div id="sinm"><input type="checkbox" id="sinmm" class="form-check-input"> Ranking singlowy mężczyzn</div> <br>
-                    <div id="debk"><input type="checkbox" id="debkk" class="form-check-input"> Ranking deblowy kobiet</div id="debk"> <br>
-                    <div id="debm"><input type="checkbox" id="debmm" class="form-check-input"> Ranking deblowy mężczyzn</div id="debm">
-                    <div id="narod"><input type="checkbox" id="narodd" class="form-check-input"> Narodowość</div id="narod"> <br>
-                    <div id="urodz"><input type="checkbox" id="urodzz" class="form-check-input"> Data urodzenia</div id="urodz"> <br>
-                    <div id="wzrost"><input type="checkbox" id="wzrostt" class="form-check-input"> wzrost</div id="wzrost"> <br>
-                    <div id="reka"><input type="checkbox" id="rekaa" class="form-check-input"> Preferowana ręka</div id="reka">
-                    <div id="sinran"><input type="checkbox" id="sinrann" class="form-check-input"> Punkty singlowe i ranking</div id="sinran">
-                    <div id="debran"><input type="checkbox" id="debrann" class="form-check-input"> Punkty deblowe i ranking</div id="debran">
-                    <div id="rola"><input type="checkbox" id="rolaa" class="form-check-input"> Rola</div id="rola"> <br>
-                    <div id="rozp"><input type="checkbox" id="rozpp" class="form-check-input"> Rozpoczęcie współpracy</div id="rozp">
-                    <div id="zak"><input type="checkbox" id="zakk" class="form-check-input"> Zakończenie współpracy</div id="zak">
-                    <div id="zaw" ><input type="checkbox" id="zaww" class="form-check-input"> Zawodnik</div id="zaw">
-                    <div id="dat"><input type="checkbox" id="datt" class="form-check-input"> Data</div id="dat">
-                    <div id="tur"><input type="checkbox" id="turr" class="form-check-input"> Turniej</div id="tur">
-                    <div id="eta"><input type="checkbox" id="etaa" class="form-check-input"> Etap turnieju</div id="eta">
-                    <div id="ran"><input type="checkbox" id="rann" class="form-check-input"> Ranga</div id="ran"> <br>
-                    <div id="naw"><input type="checkbox" id="naww" class="form-check-input"> Nawierzchnia</div>
-                    <div id="mia"><input type="checkbox" id="miaa" class="form-check-input"> Miasto</div id="mia">
-                    <div id="pul"><input type="checkbox" id="pull" class="form-check-input"> Pula nagród</div id="pul">
-                    <div id="pocz"><input type="checkbox" id="poczz" class="form-check-input"> Data rozpoczęcia</div id="pocz">
-                    <div id="kon"><input type="checkbox" id="konn" class="form-check-input"> Data zakończenia</div id="kon">
-                    <div id="kra"><input type="checkbox" id="kraa" class="form-check-input"> kraj</div id="kra">
-                    <div id="rozsta"><input type="checkbox" id="rozstaa" class="form-check-input"> Rozstawienie</div id="pocz">
-                    <div id="rez"><input type="checkbox" id="rezz" class="form-check-input"> Rezultat</div id="kon">
-                    <div id="lic"><input type="checkbox" id="licc" class="form-check-input"> kraj</div id="kra">
-                    <button onclick=HideFindProp() type="button" class="btn btn-danger">Anuluj</button>
+                    <br>
+                    <div id="sink" class = "cbx"><input type="checkbox" id="sinkk" class="form-check-input"> Ranking singlowy kobiet</div>
+                    <div id="sinm" class = "cbx"><input type="checkbox" id="sinmm" class="form-check-input"> Ranking singlowy mężczyzn</div>
+                    <div id="debk" class = "cbx"><input type="checkbox" id="debkk" class="form-check-input"> Ranking deblowy kobiet</div id="debk">
+                    <div id="debm" class = "cbx"><input type="checkbox" id="debmm" class="form-check-input"> Ranking deblowy mężczyzn</div id="debm">
+                    <div id="narod" class = "cbx"><input type="checkbox" id="narodd" class="form-check-input"> Narodowość</div id="narod">
+                    <div id="urodz" class = "cbx"><input type="checkbox" id="urodzz" class="form-check-input"> Data urodzenia</div id="urodz">
+                    <div id="wzrost" class = "cbx"><input type="checkbox" id="wzrostt" class="form-check-input"> Wzrost</div id="wzrost">
+                    <div id="reka" class = "cbx"><input type="checkbox" id="rekaa" class="form-check-input"> Preferowana ręka</div id="reka">
+                    <div id="sinran" class = "cbx"><input type="checkbox" id="sinrann" class="form-check-input"> Punkty singlowe i ranking</div id="sinran">
+                    <div id="debran" class = "cbx"><input type="checkbox" id="debrann" class="form-check-input"> Punkty deblowe i ranking</div id="debran">
+                    <div id="rola" class = "cbx"><input type="checkbox" id="rolaa" class="form-check-input"> Rola</div id="rola">
+                    <div id="rozp" class = "cbx"><input type="checkbox" id="rozpp" class="form-check-input"> Rozpoczęcie współpracy</div id="rozp">
+                    <div id="zak" class = "cbx"><input type="checkbox" id="zakk" class="form-check-input"> Zakończenie współpracy</div id="zak">
+                    <div id="zaw" class = "cbx"><input type="checkbox" id="zaww" class="form-check-input"> Zawodnik</div id="zaw">
+                    <div id="dat" class = "cbx"><input type="checkbox" id="datt" class="form-check-input"> Data</div id="dat">
+                    <div id="tur" class = "cbx"><input type="checkbox" id="turr" class="form-check-input"> Turniej</div id="tur">
+                    <div id="eta" class = "cbx"><input type="checkbox" id="etaa" class="form-check-input"> Etap turnieju</div id="eta">
+                    <div id="ran" class = "cbx"><input type="checkbox" id="rann" class="form-check-input"> Ranga</div id="ran">
+                    <div id="naw" class = "cbx"><input type="checkbox" id="naww" class="form-check-input"> Nawierzchnia</div>
+                    <div id="mia" class = "cbx"><input type="checkbox" id="miaa" class="form-check-input"> Miasto</div id="mia">
+                    <div id="pul" class = "cbx"><input type="checkbox" id="pull" class="form-check-input"> Pula nagród</div id="pul">
+                    <div id="pocz" class = "cbx"><input type="checkbox" id="poczz" class="form-check-input"> Data rozpoczęcia</div id="pocz">
+                    <div id="kon" class = "cbx"><input type="checkbox" id="konn" class="form-check-input"> Data zakończenia</div id="kon">
+                    <div id="kra" class = "cbx"><input type="checkbox" id="kraa" class="form-check-input"> Kraj</div id="kra">
+                    <div id="rozsta" class = "cbx"><input type="checkbox" id="rozstaa" class="form-check-input"> Rozstawienie</div id="pocz">
+                    <div id="rez" class = "cbx"><input type="checkbox" id="rezz" class="form-check-input"> Rezultat</div id="kon">
+                    <div id="lic" class = "cbx"><input type="checkbox" id="licc" class="form-check-input"> Kraj</div id="kra">
+                    <br>
                     <button onclick=ShowResults() type="button" class="btn btn-success">Zatwierdź</button>
+                    <button onclick=HideFindProp() type="button" class="btn btn-danger">Anuluj</button>
                     <small id="findpropmsg" class="form-text text-muted"></small> 
                 </form>
             </div>
@@ -91,12 +94,11 @@
         <div id="ChooseActionPl">
             <div id="ChooseActionPlOverlay"></div>
             <div id="ChooseActionPlContent" class="container col-auto">
-                <h3>Wybierz akcję, którą chcesz wykonać</h3>
                 <form>
-                    <button onclick=ShowModPl() type="button">Modyfikuj informacje o zawodnikach</button> 
-                    <button onclick=ShowInsPl() type="button">Wprowadź nowego zawodnika</button>
-                    <button onclick=ShowDelPl() type="button">Usuń zawodnika/ów</button> 
-                    <button onclick=HideCAPl() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle1" onclick=ShowModPl() type="button">Modyfikuj informacje o zawodniku</button> 
+                    <button class="buttonStyle1" onclick=ShowInsPl() type="button">Wprowadź nowego zawodnika</button>
+                    <button class="buttonStyle1" onclick=ShowDelPl() type="button">Usuń zawodnika/ów</button> 
+                    <button class="cancelButtonStyle1" onclick=HideCAPl() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -159,12 +161,11 @@
         <div id="ChooseActionTo">
             <div id="ChooseActionToOverlay"></div>
             <div id="ChooseActionToContent" class="container col-auto">
-                <h3>Wybierz akcję, którą chcesz wykonać</h3>
                 <form>
-                    <button onclick=ShowModTo() type="button">Modyfikuj informacje o turniejach</button> 
-                    <button onclick=ShowInsTo() type="button">Wprowadź nowy turniej</button>
-                    <button onclick=ShowDelTo() type="button">Usuń turniej</button> 
-                    <button onclick=HideCATo() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle1" onclick=ShowModTo() type="button">Modyfikuj informacje o turnieju</button> 
+                    <button class="buttonStyle1" onclick=ShowInsTo() type="button">Wprowadź nowy turniej</button>
+                    <button class="buttonStyle1" onclick=ShowDelTo() type="button">Usuń turniej</button> 
+                    <button class="cancelButtonStyle1" onclick=HideCATo() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -192,7 +193,7 @@
         <div id="ModTo">
             <div id="ModToOverlay"></div>
             <div id="ModToContent" class="container col-auto">
-                <h3>WModyfikacja turnieju</h3>
+                <h3>Modyfikacja turnieju</h3>
                 <form>
                     *Nazwa: <input class="form-control" type="text" id="namemodto">
                     *Rok: <input class="form-control" type="text" id="yearmodto">
@@ -223,11 +224,10 @@
         <div id="ChooseActionMa">
             <div id="ChooseActionMaOverlay"></div>
             <div id="ChooseActionMaContent" class="container col-auto">
-                <h3>Wybierz akcję, którą chcesz wykonać</h3>
                 <form>
-                    <button onclick=ShowInsMa() type="button">Wprowadź nowy mecz</button>
-                    <button onclick=ShowDelMa() type="button">Usuń mecz</button> 
-                    <button onclick=HideCAMa() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle1" onclick=ShowInsMa() type="button">Wprowadź nowy mecz</button>
+                    <button class="buttonStyle1" onclick=ShowDelMa() type="button">Usuń mecz</button> 
+                    <button class="cancelButtonStyle1"onclick=HideCAMa() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -256,26 +256,40 @@
             <div id="InsMaContent" class="container col-auto">
                 <h3>Wstawianie meczu</h3>
                 <form>
-                    *Imię pierwszego zawodnika:<br>
-                    <input class="form-control" type="text" id="nameinsma">
-                    *Nazwisko pierwszego zawodnika:<br>
-                    <input class="form-control" type="text" id="lastinsma">
-                    *Imię drugiego zawodnika:<br>
-                    <input class="form-control" type="text" id="nameinsma2">
-                    *Nazwisko drugiego zawodnika:<br>
-                    <input class="form-control" type="text" id="lastinsma2">
-                    *Data(format YYYY-MM-DD): <br>
-                    <input class="form-control" type="text" id="datainsma">
-                    *Singlowy/deblowy: <br>
-                    <input class="form-control" type="text" id="sdinsma">
-                    *Etap Turnieju(Q, 1/64, 1/32, 1/16, 1/8, QF, SF, F): <br>
-                    <input class="form-control" type="text" id="etainsma">
-                    *Nazwa turnieju: <br>
-                    <input class="form-control" type="text" id="tnameinsma">
-                    *Rok: <br>
-                    <input class="form-control" type="text" id="yearinsma">
-                    *Wynik: <br>
-                    <input class="form-control" type="text" id="resinsma">
+                    <div class="row">
+                        <div class="col-xs-6 form-group">
+                            *Imię pierwszego zawodnika:<br>
+                            <input class="form-control" type="text" id="nameinsma">
+                            *Nazwisko pierwszego zawodnika:<br>
+                            <input class="form-control" type="text" id="lastinsma">
+                            *Imię drugiego zawodnika:<br>
+                            <input class="form-control" type="text" id="nameinsma2">
+                            *Nazwisko drugiego zawodnika:<br>
+                            <input class="form-control" type="text" id="lastinsma2">
+                            Imię trzeciego zawodnika:<br>
+                            <input class="form-control" type="text" id="nameinsma3">
+                            Nazwisko trzeciego zawodnika:<br>
+                            <input class="form-control" type="text" id="lastinsma3">
+                            Imię czwartego zawodnika:<br>
+                            <input class="form-control" type="text" id="nameinsma4">
+                            Nazwisko czwartego zawodnika:<br>
+                            <input class="form-control" type="text" id="lastinsma4">
+                            *Data(format YYYY-MM-DD): <br>
+                            <input class="form-control" type="text" id="datainsma">
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            *Singlowy/deblowy: <br>
+                            <input class="form-control" type="text" id="sdinsma">
+                            *Etap Turnieju(Q, 1/64, 1/32, 1/16, 1/8, QF, SF, F): <br>
+                            <input class="form-control" type="text" id="etainsma">
+                            *Nazwa turnieju: <br>
+                            <input class="form-control" type="text" id="tnameinsma">
+                            *Rok: <br>
+                            <input class="form-control" type="text" id="yearinsma">
+                            *Wynik: <br>
+                            <input class="form-control" type="text" id="resinsma">
+                        </div>
+                    </div>
                     <button onclick=InsMa() type="button" class="btn btn-success">Zatwierdź</button> 
                     <button onclick=HideInsMa() type="button" class="btn btn-danger">Anuluj</button> <br>
                     *Te pola są obowiązkowe <br>
@@ -286,12 +300,11 @@
         <div id="ChooseActionCr">
             <div id="ChooseActionCrOverlay"></div>
             <div id="ChooseActionCrContent" class="container col-auto">
-                <h3>Wybierz akcję, którą chcesz wykonać</h3>
                 <form>
-                    <button onclick=ShowModCr() type="button">Modyfikuj informacje o sztabie</button> 
-                    <button onclick=ShowInsCr() type="button">Wprowadź nowe informacje o sztabie</button>
-                    <button onclick=ShowDelCr() type="button">Usuń członka sztabu</button> 
-                    <button onclick=HideCACr() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle1" onclick=ShowModCr() type="button">Modyfikuj informacje o sztabie</button> 
+                    <button class="buttonStyle1" onclick=ShowInsCr() type="button">Wprowadź nowe informacje o sztabie</button>
+                    <button class="buttonStyle1" onclick=ShowDelCr() type="button">Usuń członka sztabu</button> 
+                    <button class="cancelButtonStyle1" onclick=HideCACr() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -361,12 +374,11 @@
         <div id="ChooseActionPa">
             <div id="ChooseActionPaOverlay"></div>
             <div id="ChooseActionPaContent" class="container col-auto">
-                <h3>Wybierz akcję, którą chcesz wykonać</h3>
                 <form>
-                    <button onclick=ShowModPa() type="button">Zmień informacje o udziale</button>
-                    <button onclick=ShowInsPa() type="button">Wprowadź nowy udział zawodnika</button>
-                    <button onclick=ShowDelPa() type="button">Usuń udział</button> 
-                    <button onclick=HideCAPa() type="button" class="btn btn-danger">Anuluj</button>
+                    <button class="buttonStyle1" onclick=ShowModPa() type="button">Zmień informacje o udziale</button>
+                    <button class="buttonStyle1" onclick=ShowInsPa() type="button">Wprowadź nowy udział zawodnika</button>
+                    <button class="buttonStyle1" onclick=ShowDelPa() type="button">Usuń udział</button> 
+                    <button class="cancelButtonStyle1" onclick=HideCAPa() type="button" class="btn btn-danger">Anuluj</button>
                 </form>
             </div>
         </div>
@@ -399,10 +411,14 @@
             <div id="InsPaContent" class="container col-auto">
                 <h3>Dodawanie udziału zawodnika w turnieju</h3>
                 <form>
-                    *Imię: <br>
+                    *Imię pierwszego zawodnika: <br>
                     <input class="form-control" type="text" id="nameinpa">
-                    *Nazwisko: <br>
+                    *Nazwisko pierwszego zawodnika: <br>
                     <input class="form-control" type="text" id="lastinpa">
+                    Imię drugiego zawodnika: <br>
+                    <input class="form-control" type="text" id="nameinpa2">
+                    Nazwisko drugiego zawodnika: <br>
+                    <input class="form-control" type="text" id="lastinpa2">
                     *Nazwa turnieju:
                     <input class="form-control" type="text" id="tnameinpa">
                     *Rok turnieju:
@@ -501,9 +517,13 @@
             <div id="AdvMatContent" class="container col-auto">
                 <form>
                     Wyszukaj według nazwiska zawodnika: <br>
-                    <input class="form-control" type="text" id="advmatnaz">
+                    <input class="form-control" type="text" id="advmatnaz5">
                     Wyszukaj według nazwiska drugiego zawodnika: <br>
                     <input class="form-control" type="text" id="advmatnaz2">
+                    Wyszukaj według trzeciego zawodnika: <br>
+                    <input class="form-control" type="text" id="advmatnaz3">
+                    Wyszukaj według nazwiska czwartego zawodnika: <br>
+                    <input class="form-control" type="text" id="advmatnaz4">
                     Wyszukaj według daty(YYYY-MM-DD): <br>
                     <input class="form-control" type="text" id="advmatdat">
                     Wyszukaj według nazwy turnieju: <br>
@@ -544,22 +564,28 @@
             <div id="AdvToOverlay"></div>
             <div id="AdvToContent" class="container col-auto">
                 <form>
-                    Wyszukaj według wzorca nazwy turnieju: <br>
-                    <input class="form-control" type="text" id="advtoname">
-                    Wyszukaj według roku: <br>
-                    <input class="form-control" type="text" id="advtoyear">
-                    Wyszukaj według rangi(Wielki Szlem, Masters 1000, Masters 500, Masters 250, Challenger, ITF): <br>
-                    <input class="form-control" type="text" id="advtoran">
-                    Wyszukaj według nawierzchni(trawa, mączka, twardy, indoor): <br>
-                    <input class="form-control" type="text" id="advtonaw">
-                    Wyszukaj według miasta: <br>
-                    <input class="form-control" type="text" id="advtomia">
-                    Wyszukaj według kraju: <br>
-                    <input class="form-control" type="text" id="advtokra">
-                    Pula nagród większa od:
-                    <input class="form-control" type="text" id="advtopul1">
-                    Pula nagród mniejsza od:
-                    <input class="form-control" type="text" id="advtopul2">
+                    <div class="row">
+                        <div class="col-xs-6 form-group">
+                            Wyszukaj według wzorca nazwy turnieju: <br>
+                            <input class="form-control" type="text" id="advtoname">
+                            Wyszukaj według roku: <br>
+                            <input class="form-control" type="text" id="advtoyear">
+                            Wyszukaj według rangi<br>
+                            <input class="form-control" type="text" id="advtoran">
+                            Wyszukaj według nawierzchni(trawa, mączka, twardy, indoor): <br>
+                            <input class="form-control" type="text" id="advtonaw">
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            Wyszukaj według miasta: <br>
+                            <input class="form-control" type="text" id="advtomia">
+                            Wyszukaj według kraju: <br>
+                            <input class="form-control" type="text" id="advtokra">
+                            Pula nagród większa od:
+                            <input class="form-control" type="text" id="advtopul1">
+                            Pula nagród mniejsza od:
+                            <input class="form-control" type="text" id="advtopul2">
+                        </div>
+                    </div>
                     Sortuj: <br>
                     <div><input type="checkbox" id="sorto1" class="form-check-input"> alfabetycznie</div>
                     <div><input type="checkbox" id="sorto2" class="form-check-input"> odwrotnie alfabetycznie</div>
@@ -577,22 +603,28 @@
             <div id="AdvPlOverlay"></div>
             <div id="AdvPlContent" class="container col-auto">
                 <form>
-                    Wyszukaj według wzorca imienia zawodnika: <br>
-                    <input class="form-control" type="text" id="advplim">
-                    Wyszukaj według wzorca nazwiska zawodnika: <br>
-                    <input class="form-control" type="text" id="advplnaz">
-                    Wyszukaj według narodowości: <br>
-                    <input class="form-control" type="text" id="advplnar">
-                    Wyszukaj według płci(kobieta/mężczyzna): <br>
-                    <input class="form-control" type="text" id="advplpl">
-                    Wyszukaj według roku urodzenia: <br>
-                    <input class="form-control" type="text" id="advplyear">
-                    Wyszukaj według preferowanej ręki(lewa/prawa): <br>
-                    <input class="form-control" type="text" id="advplhan">
-                    Wzrost większy od:
-                    <input class="form-control" type="text" id="advplwzr1">
-                    Wzrost mniejszy od:
-                    <input class="form-control" type="text" id="advplwzr2">
+                    <div class = row>
+                        <div class="col-xs-6 form-group">
+                            Wyszukaj według wzorca imienia zawodnika: <br>
+                            <input class="form-control" type="text" id="advplim">
+                            Wyszukaj według wzorca nazwiska zawodnika: <br>
+                            <input class="form-control" type="text" id="advplnaz">
+                            Wyszukaj według narodowości: <br>
+                            <input class="form-control" type="text" id="advplnar">
+                            Wyszukaj według płci(kobieta/mężczyzna): <br>
+                            <input class="form-control" type="text" id="advplpl">
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            Wyszukaj według roku urodzenia: <br>
+                            <input class="form-control" type="text" id="advplyear">
+                            Wyszukaj według preferowanej ręki(lewa/prawa): <br>
+                            <input class="form-control" type="text" id="advplhan">
+                            Wzrost większy od:
+                            <input class="form-control" type="text" id="advplwzr1">
+                            Wzrost mniejszy od:
+                            <input class="form-control" type="text" id="advplwzr2">
+                        </div>
+                    </div>
                     Sortuj: <br>
                     <div><input type="checkbox" id="sorpl1" class="form-check-input"> alfabetycznie</div>
                     <div><input type="checkbox" id="sorpl2" class="form-check-input"> odwrotnie alfabetycznie</div>

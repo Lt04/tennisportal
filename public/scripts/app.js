@@ -4,10 +4,18 @@ var globnaz1 = '(select distinct nazwisko from udzial inner join mecz on udzial.
 'zawodnik.id_gracza where m.udzial_id_udzialu1 = mecz.udzial_id_udzialu1)'
 var globnaz2 = '(select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu2 inner join zawodnik on udzial.zawodnik_id_gracza = ' +
 'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2)'
-var globnaz3 = '(select nazwisko from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
+var globnaz3 = '(select distinct nazwisko from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
 'udzial.zawodnik_id_gracza = u.zawodnik_id_gracza)'
-var globim1 = '(select imie from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
+var globim1 = '(select distinct imie from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
 'udzial.zawodnik_id_gracza = u.zawodnik_id_gracza)'
+var globim2 = '(select distinct imie from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza2 where ' + 
+'udzial.zawodnik_id_gracza2 = u.zawodnik_id_gracza2)'
+var globnaz4 = '(select distinct nazwisko from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza2 where ' + 
+'udzial.zawodnik_id_gracza2 = u.zawodnik_id_gracza2)'
+var globnaz5 = '(select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu1 inner join zawodnik on udzial.zawodnik_id_gracza2 = ' + 
+'zawodnik.id_gracza where m.udzial_id_udzialu1 = mecz.udzial_id_udzialu1)'
+var globnaz6 = '(select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu2 inner join zawodnik on udzial.zawodnik_id_gracza2 = ' + 
+'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2)'
 $(function(){
     $("#Startowy").show()
 })
@@ -44,6 +52,7 @@ function HideAdvPl(){
 function AdvPlAcc(){
     if($("#advplim").val() == "" && $("#advplnaz").val() == "" && $("#advplpl").val() == "" && $("#advplnar").val() == "" && $("#advplyear").val() == "" && $("#advplhan").val() == "" && $("#advplwzr1").val() == "" && $("#advplwzr2").val() == "" && !$("#sorpl1").is(':checked') && !$("#sorpl2").is(':checked') && !$("#sorpl3").is(':checked') && !$("#sorpl4").is(':checked') && !$("#sorpl5").is(':checked') && !$("#sorpl6").is(':checked')){
         HideAdvPl()
+        ShowResults()
         return
     }
     if(parseInt($("#advplwzr1").val()) > parseInt($("#advplwzr2").val())){
@@ -193,30 +202,42 @@ function AdvPlAcc(){
         query_str: query_string2   
     })
     .then(function (response){
-        var res_str = ""
+        var res_str = "<table>"
+        var head = "<tr>"
         for(var i = 0; i < response.data.length; i++){
-            res_str = res_str + response.data[i].imie + ' ' + response.data[i].nazwisko + ' '
+            res_str += "<tr>"
+            if(i == 0) head += "<th>Imię</th><th>Nazwisko</th>"
+            res_str += "<td>" + response.data[i].imie + "</td><td>" + response.data[i].nazwisko + "</td>"
             if(response.data[i].narodowość != undefined){
-                res_str = res_str + response.data[i].narodowość + ' ' 
+                if(i == 0) head += "<th>Narodowość</th>"
+                res_str += "<td>" + response.data[i].narodowość + "</td>"
             }
             if(response.data[i].data_urodzenia!= undefined){
-                res_str = res_str + response.data[i].data_urodzenia + ' '
+                if(i == 0) head += "<th>Data urodzenia</th>"
+                res_str += "<td>" + response.data[i].data_urodzenia + "</td>"
             }
             if(response.data[i].wzrost != undefined){
-                res_str = res_str + response.data[i].wzrost + ' '
+                if(i == 0) head += "<th>Wzrost</th>"
+                res_str += "<td>" + response.data[i].wzrost + "</td>"
             }
             if(response.data[i].preferowana_ręka != undefined){
-                res_str = res_str + response.data[i].preferowana_ręka + ' '
+                if(i == 0) head += "<th>Preferowana ręka</th>"
+                res_str += "<td>" + response.data[i].preferowana_ręka + "</td>"
             }
             if(response.data[i].punkty_singlowe != undefined){
-                res_str = res_str + response.data[i].punkty_singlowe + ' ' + response.data[i].poz1 + ' '
+                if(i == 0) head += "<th>Punkty Singlowe</th>"
+                res_str += "<td>" + response.data[i].punkty_singlowe + "</td>"
             }
             if(response.data[i].punkty_deblowe != undefined){
-                res_str = res_str + response.data[i].punkty_deblowe + ' ' + response.data[i].poz2 + ' '
+                if(i == 0) head += "<th>Punkty Deblowe</th>"
+                res_str += "<td>" + response.data[i].punkty_deblowe + "</td>"
             }
-            res_str = res_str + '\n'
+            res_str += "</tr>"
         }
-        $("#resultsmsg").text(res_str)
+        head += "</tr>"
+        res_str = "<table>" + head + res_str + "</table>"
+
+        $("#resultsmsg").html(res_str)
         HideAdvPl()
     })
     .catch(function (error){
@@ -235,6 +256,7 @@ function HideAdvTo(){
 function AdvToAcc(){
     if($("#advtoname").val() == "" && $("#advtoyear").val() == "" && $("#advtoran").val() == "" && $("#advtonaw").val() == "" && $("#advtomia").val() == "" && $("#advtokra").val() == "" && $("#advtopul1").val() == "" && $("#advtopul2").val() == "" && !$("#sorto1").is(':checked') && !$("#sorto2").is(':checked') && !$("#sorto3").is(':checked') && !$("#sorto4").is(':checked') && !$("#sorto5").is(':checked') && !$("#sorto6").is(':checked')){
         HideAdvTo()
+        ShowResults()
         return
     }
     if(parseInt($("#advtopul1").val()) > parseInt($("#advtopul2").val())){
@@ -384,33 +406,53 @@ function AdvToAcc(){
         query_str: query_string2   
     })
     .then(function (response){
+        var flag = true;
         var res_str = ""
+        var head = "<tr>"
+
         for(var i = 0; i < response.data.length; i++){
-            res_str = res_str + response.data[i].nazwa + ' ' + response.data[i].rok + ' '
+            res_str += "<tr>"
+            if(i == 0) head += "<th>Nazwa</th><th>Rok</th>"
+            res_str += "<td>" + response.data[i].nazwa + "</td>" + "<td>" + response.data[i].rok + "</td>"
             if(response.data[i].ranga != undefined){
-                res_str = res_str + response.data[i].ranga + ' ' 
+                if(i == 0) head += "<th>Ranga</th>"
+                res_str += "<td>" + response.data[i].ranga + "</td>"
             }
             if(response.data[i].nawierzchnia != undefined){
-                res_str = res_str + response.data[i].nawierzchnia + ' '
+                if(i == 0) head += "<th>Nawierzchnia</th>"
+                res_str += "<td>" + response.data[i].nawierzchnia + "</td>"
             }
             if(response.data[i].miasto != undefined){
-                res_str = res_str + response.data[i].miasto + ' '
+                if(i == 0) head += "<th>Miasto</th>"
+                res_str += "<td>" + response.data[i].miasto + "</td>"
             }
             if(response.data[i].kraj != undefined){
-                res_str = res_str + response.data[i].kraj + ' '
+                if(i == 0) head += "<th>Kraj</th>"
+                res_str += "<td>" + response.data[i].kraj + "</td>"
             }
             if(response.data[i].pula_nagród != undefined){
-                res_str = res_str + response.data[i].pula_nagród + ' '
+                if(i == 0) head += "<th>Pula nagród</th>"
+                res_str += "<td>" + response.data[i].pula_nagród + "</td>"
             }
             if(response.data[i].data_rozpoczęcia != undefined){
-                res_str = res_str + response.data[i].data_rozpoczęcia + ' ' 
+                if(i == 0) head += "<th>Data rozpoczęcia</th>"
+                res_str += "<td>" + response.data[i].data_rozpoczęcia + "</td>"
             }
             if(response.data[i].data_zakończenia != undefined){
-                res_str = res_str + response.data[i].data_zakończenia + ' '
+                if(flag){
+                    head += "<th>Data zakończenia</th>"
+                    flag = false
+                }
+                res_str += "<td>" + response.data[i].data_zakończenia + "</td>"
             }
-            res_str = res_str + '\n'
+            res_str += "</tr>"
         }
-        $("#resultsmsg").text(res_str)
+        head += "</tr>"
+        res_str = "<table>" + head + res_str + "</table>"
+
+        console.log(res_str)
+
+        $("#resultsmsg").html(res_str)
         HideAdvTo()
     })
     .catch(function (error){
@@ -443,6 +485,7 @@ function HideAdvPa(){
 function AdvCrAcc(){
     if($("#advcrim").val() == "" && $("#advcrnaz").val() == "" && $("#advcrim2").val() == "" && $("#advcrnaz2").val() == "" && $("#advcrrol").val() == "" && !$("#sorcr1").is(':checked') && !$("#sorcr2").is(':checked')){
         HideAdvCr()
+        ShowResults()
         return
     }
     if($("#sorcr1").is(':checked') && $("#sorcr2").is(':checked')){
@@ -502,25 +545,45 @@ function AdvCrAcc(){
         query_str: query_string2   
     })
     .then(function (response){
+        var flag1 = true, flag2 = true, flag3 = true;
         var res_str = ""
+        var head = "<tr>"
         for(var i = 0; i < response.data.length; i++){
-            res_str = res_str + response.data[i].imie_sztab + ' ' + response.data[i].nazwisko_sztab + ' '
+            res_str += "<tr>"
+            if(i == 0) head += "<th>Imię członka sztabu</th><th>Nazwisko członka sztabu</th>"
+            res_str += "<td>" + response.data[i].imie_sztab + "</td>" + "<td>" + response.data[i].nazwisko_sztab + "</td>"
             if(response.data[i].rola != undefined){
-                res_str = res_str + response.data[i].rola + ' ' 
+                if(i == 0) head += "<th>Rola</th>"
+                res_str += "<td>" + response.data[i].rola + "</td>"
             }
             if(response.data[i].imie_zawodnik != undefined){
-                res_str = res_str + response.data[i].imie_zawodnik + ' ' + response.data[i].nazwisko_zawodnik + ' '
+                if(flag1){
+                    head += "<th>Imię zawodnika</th><th>Nazwisko zawodnika</th>"
+                    flag1 = false
+                }
+                res_str += "<td>" + response.data[i].imie_zawodnik + "</td>" + "<td>" + response.data[i].nazwisko_zawodnik + "</td>"
             }
             if(response.data[i].data_rozpoczęcia != undefined){
-                console.log(response.data[i].data_rozpoczęcia)
-                res_str = res_str + response.data[i].data_rozpoczęcia + ' '
+                if(flag2){
+                    head += "<th>Data rozpoczęcia współpracy</th>"
+                    flag2 = false;
+                }
+                res_str += "<td>" + response.data[i].data_rozpoczęcia+ "</td>"
             }
             if(response.data[i].data_zakończenia != undefined){
-                res_str = res_str + response.data[i].data_zakończenia + ' '
+                if(flag3){
+                    head += "<th>Data zakończenia współpracy</th>"
+                    flag3 = false;
+                }
+                res_str += "<td>" + response.data[i].data_zakończenia + "</td>"
             }
-            res_str = res_str + '\n'
+            res_str += "</tr>"
         }
-        $("#resultsmsg").text(res_str)
+        head += "</tr>"
+        res_str = "<table>" + head + res_str + "</table>"
+        console.log(res_str)
+
+        $("#resultsmsg").html(res_str)
         HideAdvCr()
     })
     .catch(function (error){
@@ -532,21 +595,22 @@ function AdvCrAcc(){
 function AdvPaAcc(){
     if($("#advpanaz").val() == "" && $("#advpaname").val() == "" && $("#advpayear").val() == "" && $("#advparez").val() == "" && $("#advparoz").val() == "" && $("#advpaim").val() == "" && !$("#sorpa1").is(':checked') && !$("#sorpa2").is(':checked') && !$("#sorpa3").is(':checked') && !$("#sorpa4").is(':checked') && !$("#sorpa5").is(':checked') && !$("#sorpa6").is(':checked')){
         HideAdvPa()
+        ShowResults()
         return
     }
     var query_string2 = query_string
     var ifwhere = false
     if($("#advpanaz").val() != ""){
-        query_string2 = query_string2 + ' where ' + globnaz3 + ' = "' + $("#advpanaz").val() + '"'
+        query_string2 = query_string2 + ' where (' + globnaz3 + ' like "%' + $("#advpanaz").val() + '%" or ' + globnaz4 + ' like "%' + $("#advpanaz").val() + '%")'
         ifwhere = true
     }
     if($("#advpaim").val() != ""){
         if(ifwhere == false){
-            query_string2 = query_string2 + ' where ' + globim1 + ' = "' + $("#advpaim").val() + '"'
+            query_string2 = query_string2 + ' where (' + globim1 + ' like "%' + $("#advpaim").val() + '%" or ' + globim2 + ' like "%' + $("#advpaim").val() + '%")'
             ifwhere = true
         }
         else{
-            query_string2 = query_string2 + ' and ' + globim1 + ' = "' + $("#advpaim").val() + '"'
+            query_string2 = query_string2 + ' and (' + globim1 + ' like "%' + $("#advpaim").val() + '%" or ' + globim2 + ' like "%' + $("#advpaim").val() + '%")'
         }
     }
     if($("#advpaname").val() != ""){
@@ -649,21 +713,43 @@ function AdvPaAcc(){
         query_str: query_string2   
     })
     .then(function (response){
+        var flag = true;
+        var flag2 = true
         var res_str = ""
+        var head = "<tr>"
         for(var i = 0; i < response.data.length; i++){
-            res_str = res_str + response.data[i].imie + ' ' + response.data[i].nazwisko + ' ' + response.data[i].turniej_nazwa + ' ' + response.data[i].turniej_rok + ' '
+            res_str += "<tr>"
+            if(i == 0) head += "<th>Imię</th><th>Nazwisko</th><th>Nazwa turnieju</th><th>Rok</th>"
+            res_str += "<td>" + response.data[i].imie + "</td><td>" + response.data[i].nazwisko + "</td><td>" + response.data[i].turniej_nazwa + "</td><td>" + response.data[i].turniej_rok + "</td>"
+            if(response.data[i].imie2 != undefined){
+                if(flag2){
+                    head += "<th>Imię</th><th>Nazwisko</th>"
+                    flag2 = false
+                }
+                res_str += "<td>" + response.data[i].imie2 + "</td><td>" + response.data[i].nazwisko2 + "</td>"
+            }
             if(response.data[i].rezultat != undefined){
-                res_str = res_str + response.data[i].rezultat + ' ' 
+                if(i == 0) head += "<th>Rezultat</th>"
+                res_str += "<td>" + response.data[i].rezultat + "</td>"
             }
             if(response.data[i].liczba_zdobytych_punktów != undefined){
-                res_str = res_str + response.data[i].liczba_zdobytych_punktów + ' '
+                if(i == 0) head += "<th>Liczba zdobytych punktów</th>"
+                res_str += "<td>" + response.data[i].liczba_zdobytych_punktów + "</td>"
             }
             if(response.data[i].rozst != undefined){
-                res_str = res_str + response.data[i].rozst + ' '
+                if(flag){
+                    head += "<th>Rozstawienie</th>"
+                    flag = false
+                }
+                res_str += "<td>" + response.data[i].rozst + "</td>"
             }
-            res_str = res_str + '\n'
+            res_str += "</tr>"
         }
-        $("#resultsmsg").text(res_str)
+        head += "</tr>"
+        res_str = "<table>" + head + res_str + "</table>"
+        console.log(res_str)
+        
+        $("#resultsmsg").html(res_str)
         HideAdvPa()
     })
     .catch(function (error){
@@ -674,6 +760,7 @@ function AdvPaAcc(){
 
 function AdvPaAcc2(){
     var res_str = ""
+    var head = "<tr><th>Turniej singlowy</th><th>Turniej deblowy</th></tr>";
     if($("#advpanaz").val() == "" || $("#advpaname").val() == "" || $("#advpayear").val() == ""){
         $("#advpamsg").text("Należy podać nazwisko zawodnika, nazwę oraz rok turnieju.")
         $("#advpamsg").addClass("alert alert-danger")
@@ -684,8 +771,12 @@ function AdvPaAcc2(){
         query_str: query_string2   
     })
     .then(function (response){
+        res_str = ""
         if(response.data[0].rez != null){
-            res_str = "Turniej singlowy: " + response.data[0].rez
+            res_str += "<td>" + response.data[0].rez + "</td>"
+        }
+        else{
+            res_str += "<td></td>"
         }
     })
     .catch(function (error){
@@ -698,9 +789,11 @@ function AdvPaAcc2(){
     })
     .then(function (response){
         if(response.data[0].rez != null){
-            res_str = res_str + " " + "Turniej deblowy:" + response.data[0].rez
+            res_str += "<td>" + response.data[0].rez + "</td>"
         }
-        $("#resultsmsg").text(res_str)
+        res_str = "<table>" + head + "<tr>" + res_str + "</tr>" + "</table>"
+
+        $("#resultsmsg").html(res_str)
         HideAdvPa()
     })
     .catch(function (error){
@@ -719,28 +812,22 @@ function HideAdvMat(){
 function AdvMatAcc(){
     var query_string2 = query_string
     var ifwhere = false
-    if($("#advmatnaz").val() == "" && $("#advmatname").val() == "" && $("#advmatyear").val() == "" && $("#advmatdat").val() == "" && $("#advmatnaz2").val() == "" && !$("#sormat1").is(':checked') && !$("#sormat2").is(':checked')){
+    if($("#advmatnaz5").val() == ""){
+        console.log("Pisz coś")
+    }
+    if($("#advmatnaz5").val() == "" && $("#advmatname").val() == "" && $("#advmatyear").val() == "" && $("#advmatdat").val() == "" && $("#advmatnaz2").val() == "" && !$("#sormat1").is(':checked') && !$("#sormat2").is(':checked') && $("#advmatnaz3").val() == "" && $("#advmatnaz4").val() == ""){
         HideAdvMat()
+        ShowResults()
         return
     }
-    if($("#advmatnaz").val() == "" && $("#advmatnaz2").val() != ""){
-        $("#advmatmsg").text("Proszę wypełnić pole z nazwiskiem pierwszego zawodnika.")
-        $("#advmatmsg").addClass("alert alert-danger")
-        return
-    }
+    console.log("Pisz")
     if($("#sormat1").is(':checked') && $("#sormat2").is(':checked')){
         $("#advmatmsg").text("Nie można sortować jednocześnie od najstarszych i najnowszych.")
         $("#advmatmsg").addClass("alert alert-danger")
         return
     }
-    if($("#advmatnaz").val() != "" && $("#advmatnaz2").val() == ""){
-        query_string2 = query_string2 + ' where (' + globnaz1 + ' = "' + $("#advmatnaz").val() + '" or ' + globnaz2 + ' = "' + $("#advmatnaz").val() + '")'
-        ifwhere = true
-    }
-    if($("#advmatnaz").val() != "" && $("#advmatnaz2").val() != ""){
-        query_string2 = query_string2 + ' where ((' + globnaz1 + ' = "' + $("#advmatnaz").val() + '" or ' + globnaz2 + ' = "' + $("#advmatnaz").val() + '") and (' + globnaz1 + ' = "' + $("#advmatnaz2").val() + '" or ' + globnaz2 + ' = "' + $("#advmatnaz2").val() + '"))'
-        ifwhere = true
-    }
+    query_string2 += ' where ((' + globnaz1 + ' like "%' + $("#advmatnaz5").val() + '%" or ' + globnaz2 + ' like "%' + $("#advmatnaz5").val() + '%" or ' +  globnaz5 + ' like "%' + $("#advmatnaz5").val() + '%" or ' +  globnaz6 + ' like "%' + $("#advmatnaz5").val() + '%") and (' +  globnaz1 + ' like "%' + $("#advmatnaz2").val() + '%" or ' +  globnaz2 + ' like "%' + $("#advmatnaz2").val() + '%" or ' +  globnaz5 + ' like "%' + $("#advmatnaz2").val() + '%" or ' +  globnaz6 + ' like "%' + $("#advmatnaz2").val() + '%") and (' +  globnaz1 + ' like "%' + $("#advmatnaz3").val() + '%" or ' +  globnaz2 + ' like "%' + $("#advmatnaz3").val() + '%" or ' +  globnaz5 + ' like "%' + $("#advmatnaz3").val() + '%" or ' +  globnaz6 + ' like "%' + $("#advmatnaz3").val() + '%") and (' +  globnaz1 + ' like "%' + $("#advmatnaz4").val() + '%" or ' +  globnaz2 + ' like "%' + $("#advmatnaz4").val() + '%" or ' +  globnaz5 + ' like "%' + $("#advmatnaz4").val() + '%" or ' +  globnaz6 + ' like "%' + $("#advmatnaz4").val() + '%"))'
+    ifwhere = true
     if($("#advmatname").val() != ""){
         if(ifwhere == false){
             query_string2 = query_string2 + ' where m.turniej_nazwa = "' + $("#advmatname").val() + '"'
@@ -776,20 +863,42 @@ function AdvMatAcc(){
     })
     .then(function (response){
         var res_str = ""
+        var head = "<tr>"
         for(var i = 0; i < response.data.length; i++){
+            res_str += "<tr>"
             if(response.data[i].data_meczu != undefined){
-                res_str = res_str + response.data[i].data_meczu + ' ' 
+                if(i == 0) head += "<th>Data meczu</th>"
+                res_str += "<td>"+ response.data[i].data_meczu + "</td>" 
             }
-            res_str = res_str + response.data[i].imie1 + ' ' + response.data[i].nazwisko1 + ' ' + response.data[i].imie2 + ' ' + response.data[i].nazwisko2 + ' ' + response.data[i].wynik + ' '
+            if(i == 0) head += "<th>Imię</th><th>Nazwisko</th><th>Imię</th><th>Nazwisko</th><th>Imię</th><th>Nazwisko</th><th>Imię</th><th>Nazwisko</th><th>Wynik</th>"
+            if(response.data[i].imie3 == undefined){
+                response.data[i].imie3 = ""
+            }
+            if(response.data[i].imie4 == undefined){
+                response.data[i].imie4 = ""
+            }
+            if(response.data[i].nazwisko3 == undefined){
+                response.data[i].nazwisko3 = ""
+            }
+            if(response.data[i].nazwisko4 == undefined){
+                response.data[i].nazwisko4 = ""
+            }
+            res_str += "<td>" + response.data[i].imie1 + "</td><td>" + response.data[i].nazwisko1 + '</td><td>' + response.data[i].imie3 + "</td><td>" + response.data[i].nazwisko3 + "</td><td>" + response.data[i].imie2 + "</td><td>" + response.data[i].nazwisko2 + "</td><td>" + response.data[i].imie4 + "</td><td>" + response.data[i].nazwisko4 + "</td><td>" + response.data[i].wynik + "</td>"
             if(response.data[i].turniej_nazwa != undefined){
-                res_str = res_str + response.data[i].turniej_nazwa + ' '
+                if(i == 0) head += "<th>Nazwa turnieju</th>"
+                res_str += "<td>"+ response.data[i].turniej_nazwa + "</td>" 
             }
             if(response.data[i].etap_turnieju != undefined){
-                res_str = res_str + response.data[i].etap_turnieju + ' '
+                if(i == 0) head += "<th>Etap turnieju</th>"
+                res_str += "<td>"+ response.data[i].etap_turnieju + "</td>" 
             }
-            res_str = res_str + '\n'
+            res_str += "</tr>"
         }
-        $("#resultsmsg").text(res_str)
+        head += "</tr>"
+        res_str = "<table>" + head + res_str + "</table>"
+        console.log(res_str)
+
+        $("#resultsmsg").html(res_str)
         HideAdvMat()
     })
     .catch(function (error){
@@ -851,16 +960,25 @@ function AdvRankAcc(){
     })
     .then(function (response){
         var res_str = ""
+        var head = "<tr>"
         for(var i = 0; i < response.data.length; i++){
-            res_str = res_str + response.data[i].pozycja + '. ' + response.data[i].imie + ' ' + response.data[i].nazwisko + ' '
+            if(i == 0) head += "<th>Pozycja</th><th>Imię</th><th>Nazwisko</th>"
+            res_str += "<td>" + response.data[i].pozycja + "</td><td>" + response.data[i].imie + "</td><td>" + response.data[i].nazwisko + "</td>"
             if(response.data[i].punkty_singlowe != undefined){
-                res_str = res_str + response.data[i].punkty_singlowe + '\n'
+                if(i == 0) head += "<th>Punkty Singlowe</th>"
+                res_str += "<td>" + response.data[i].punkty_singlowe + "</td>"
             }
             else{
-                res_str = res_str + response.data[i].punkty_deblowe + '\n'
+                if(i == 0) head += "<th>Punkty Deblowe</th>"
+                res_str += "<td>" + response.data[i].punkty_deblowe + "</td>"
             }
+            res_str += "</tr>"
         }
-        $("#resultsmsg").text(res_str)
+        head += "</tr>"
+        res_str = "<table>" + head + res_str + "</table>"
+        console.log(res_str)
+
+        $("#resultsmsg").html(res_str)
         HideAdvRank()
     })
     .catch(function (error){
@@ -876,22 +994,22 @@ function ShowResults(){
     if($("#sinmm").is(':checked') || $("#sinkk").is(':checked') || $("#debkk").is(':checked') || $("#debmm").is(':checked')){
         if($("#sinmm").is(':checked')){
             licznik++
-            query_string = query_string + 'pozycja, imie, nazwisko, punkty_singlowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
+            query_string = query_string + 'pozycja, imie, nazwisko, data_od, punkty_singlowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
             ' and ranking_rodzaj_rankingu = "singlowy mężczyzn" order by pozycja' 
         }
         if($("#sinkk").is(':checked')){
             licznik++
-            query_string = query_string + 'pozycja, imie, nazwisko, punkty_singlowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
+            query_string = query_string + 'pozycja, imie, nazwisko, data_od, punkty_singlowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
             ' and ranking_rodzaj_rankingu = "singlowy kobiet" order by pozycja' 
         }
         if($("#debkk").is(':checked')){
             licznik++
-            query_string = query_string + 'pozycja, imie, nazwisko, punkty_deblowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
+            query_string = query_string + 'pozycja, imie, nazwisko, data_od, punkty_deblowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
             ' and ranking_rodzaj_rankingu = "deblowy kobiet" order by pozycja' 
         }
         if($("#debmm").is(':checked')){
             licznik++
-            query_string = query_string + 'pozycja, imie, nazwisko, punkty_deblowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
+            query_string = query_string + 'pozycja, imie, nazwisko, data_od, punkty_deblowe from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza where data_do is null' + 
             ' and ranking_rodzaj_rankingu = "deblowy mężczyzn" order by pozycja' 
         }
         if(licznik != 1){
@@ -904,16 +1022,25 @@ function ShowResults(){
         })
         .then(function (response){
             var res_str = ""
+            var head = "<tr>"
             for(var i = 0; i < response.data.length; i++){
-                res_str = res_str + response.data[i].pozycja + '. ' + response.data[i].imie + ' ' + response.data[i].nazwisko + ' '
+                if(i == 0) head += "<th>Pozycja</th><th>Imię</th><th>Nazwisko</th><th>Data od</th>"
+                res_str += "<td>" + response.data[i].pozycja + "</td><td>" + response.data[i].imie + "</td><td>" + response.data[i].nazwisko + "</td><td>" + response.data[i].data_od + "</td>"
                 if(response.data[i].punkty_singlowe != undefined){
-                    res_str = res_str + response.data[i].punkty_singlowe + '\n'
+                    if(i == 0) head += "<th>Punkty Singlowe</th>"
+                    res_str += "<td>" + response.data[i].punkty_singlowe + "</td>"
                 }
                 else{
-                    res_str = res_str + response.data[i].punkty_deblowe + '\n'
+                    if(i == 0) head += "<th>Punkty Deblowe</th>"
+                    res_str += "<td>" + response.data[i].punkty_deblowe + "</td>"
                 }
+                res_str += "</tr>"
             }
-            $("#resultsmsg").text(res_str)
+            head += "</tr>"
+            res_str = "<table>" + head + res_str + "</table>"
+            console.log(res_str)
+
+            $("#resultsmsg").html(res_str)
             $("#FindProp").hide()
             $("#Results").show()
             tab = "ranking"
@@ -947,25 +1074,45 @@ function ShowResults(){
             query_str: query_string   
         })
         .then(function (response){
+            var flag1 = true, flag2 = true, flag3 = true;
             var res_str = ""
+            var head = "<tr>"
             for(var i = 0; i < response.data.length; i++){
-                res_str = res_str + response.data[i].imie_sztab + ' ' + response.data[i].nazwisko_sztab + ' '
+                res_str += "<tr>"
+                if(i == 0) head += "<th>Imię</th><th>Nazwisko</th>"
+                res_str += "<td>" + response.data[i].imie_sztab + "</td><td>" + response.data[i].nazwisko_sztab + "</td>"
                 if(response.data[i].rola != undefined){
-                    res_str = res_str + response.data[i].rola + ' ' 
+                    if(i == 0) head += "<th>Rola</th>"
+                    res_str += "<td>" + response.data[i].rola + "</td>" 
                 }
                 if(response.data[i].imie_zawodnik != undefined){
-                    res_str = res_str + response.data[i].imie_zawodnik + ' ' + response.data[i].nazwisko_zawodnik + ' '
+                    if(flag1) {
+                        head += "<th>Imię zawodnika</th><th>Nazwisko zawodnika</th>"
+                        flag1 = false
+                    }
+                    res_str += "<td>" + response.data[i].imie_zawodnik + "</td><td>" + response.data[i].nazwisko_zawodnik + "</td>"
                 }
                 if(response.data[i].data_rozpoczęcia != undefined){
-                    console.log(response.data[i].data_rozpoczęcia)
-                    res_str = res_str + response.data[i].data_rozpoczęcia + ' '
+                    if(flag2){
+                        head += "<th>Data rozpoczęcia</th>"
+                        flag2 = false
+                    }
+                    res_str += "<td>" + response.data[i].data_rozpoczęcia + "</td>" 
                 }
                 if(response.data[i].data_zakończenia != undefined){
-                    res_str = res_str + response.data[i].data_zakończenia + ' '
+                    if(flag3){
+                        head += "<th>Data zakończenia</th>"
+                        flag3 = false
+                    }
+                    res_str += "<td>" + response.data[i].data_zakończenia + "</td>" 
                 }
-                res_str = res_str + '\n'
+                res_str += "</tr>"
             }
-            $("#resultsmsg").text(res_str)
+            head += "</tr>"
+            res_str = "<table>" + head + res_str + "</table>"
+            console.log(res_str)
+
+            $("#resultsmsg").html(res_str)
             $("#FindProp").hide()
             $("#Results").show()
             tab = "sztab"
@@ -980,7 +1127,11 @@ function ShowResults(){
         'zawodnik.id_gracza where m.udzial_id_udzialu1 = mecz.udzial_id_udzialu1) as imie1, (select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu1 inner join zawodnik on udzial.zawodnik_id_gracza = ' + 
         'zawodnik.id_gracza where m.udzial_id_udzialu1 = mecz.udzial_id_udzialu1) as nazwisko1, (select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu2 inner join zawodnik on udzial.zawodnik_id_gracza = ' +
         'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2) as nazwisko2, (select distinct imie from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu2 inner join zawodnik on udzial.zawodnik_id_gracza = ' +
-        'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2) as imie2'
+        'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2) as imie2, (select distinct imie from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu1 inner join zawodnik on udzial.zawodnik_id_gracza2 = ' +
+        'zawodnik.id_gracza where m.udzial_id_udzialu1 = mecz.udzial_id_udzialu1) as imie3, (select distinct imie from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu2 inner join zawodnik on udzial.zawodnik_id_gracza2 = ' +
+        'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2) as imie4, (select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu1 inner join zawodnik on udzial.zawodnik_id_gracza2 = ' + 
+        'zawodnik.id_gracza where m.udzial_id_udzialu1 = mecz.udzial_id_udzialu1) as nazwisko3, (select distinct nazwisko from udzial inner join mecz on udzial.id_udzialu = mecz.udzial_id_udzialu2 inner join zawodnik on udzial.zawodnik_id_gracza2 = ' + 
+        'zawodnik.id_gracza where m.udzial_id_udzialu2 = mecz.udzial_id_udzialu2) as nazwisko4'
         if($("#datt").is(':checked')){
             query_string = query_string + ', data_meczu'
         }
@@ -996,20 +1147,42 @@ function ShowResults(){
         })
         .then(function (response){
             var res_str = ""
+            var head = "<tr>"
             for(var i = 0; i < response.data.length; i++){
+                res_str += "<tr>"
                 if(response.data[i].data_meczu != undefined){
-                    res_str = res_str + response.data[i].data_meczu + ' ' 
+                    if(i==0) head += "<th>Data meczu</th>"
+                    res_str += "<td>" + response.data[i].data_meczu + "</td>"
                 }
-                res_str = res_str + response.data[i].imie1 + ' ' + response.data[i].nazwisko1 + ' ' + response.data[i].imie2 + ' ' + response.data[i].nazwisko2 + ' ' + response.data[i].wynik + ' '
+                if(i == 0) head += "<th>Imię</th><th>Nazwisko</th><th>Imię</th><th>Nazwisko</th><th>Imię</th><th>Nazwisko</th><th>Imię</th><th>Nazwisko</th><th>Wynik</th>"
+                if(response.data[i].imie3 == undefined){
+                    response.data[i].imie3 = ""
+                }
+                if(response.data[i].imie4 == undefined){
+                    response.data[i].imie4 = ""
+                }
+                if(response.data[i].nazwisko3 == undefined){
+                    response.data[i].nazwisko3 = ""
+                }
+                if(response.data[i].nazwisko4 == undefined){
+                    response.data[i].nazwisko4 = ""
+                }
+                res_str += "<td>" + response.data[i].imie1 + "</td><td>" + response.data[i].nazwisko1 + '</td><td>' + response.data[i].imie3 + "</td><td>" + response.data[i].nazwisko3 + "</td><td>" + response.data[i].imie2 + "</td><td>" + response.data[i].nazwisko2 + "</td><td>" + response.data[i].imie4 + "</td><td>" + response.data[i].nazwisko4 + "</td><td>" + response.data[i].wynik + "</td>"
                 if(response.data[i].turniej_nazwa != undefined){
-                    res_str = res_str + response.data[i].turniej_nazwa + ' '
+                    if(i==0) head += "<th>Nazwa turnieju</th>"
+                    res_str += "<td>" + response.data[i].turniej_nazwa + "</td>"
                 }
                 if(response.data[i].etap_turnieju != undefined){
-                    res_str = res_str + response.data[i].etap_turnieju + ' '
+                    if(i==0) head += "<th>Etap turnieju</th>"
+                    res_str += "<td>" + response.data[i].etap_turnieju + "</td>"
                 }
-                res_str = res_str + '\n'
+                res_str += "</tr>"
             }
-            $("#resultsmsg").text(res_str)
+            head += "</tr>"
+            res_str = "<table>" + head + res_str + "</table>"
+            console.log(res_str)
+
+            $("#resultsmsg").html(res_str)
             $("#FindProp").hide()
             $("#Results").show()
             tab = "mecz"
@@ -1035,11 +1208,11 @@ function ShowResults(){
         }
         if($("#sinrann").is(':checked')){
             query_string = query_string + ', punkty_singlowe, (select pozycja from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza ' + 
-            'where ((płeć = "kobieta" and ranking_rodzaj_rankingu = "singlowy kobiet") or (płeć = "mężczyzna" and ranking_rodzaj_rankingu = "singlowy mężczyzn")) and z.id_gracza = zawodnik.id_gracza) as poz1'
+            'where ((płeć = "kobieta" and ranking_rodzaj_rankingu = "singlowy kobiet") or (płeć = "mężczyzna" and ranking_rodzaj_rankingu = "singlowy mężczyzn")) and z.id_gracza = zawodnik.id_gracza and data_do is null) as poz1'
         }
         if($("#debrann").is(':checked')){
             query_string = query_string + ', punkty_deblowe, (select pozycja from pozycja inner join zawodnik on pozycja.zawodnik_id_gracza = zawodnik.id_gracza ' + 
-            'where ((płeć = "kobieta" and ranking_rodzaj_rankingu = "deblowy kobiet") or (płeć = "mężczyzna" and ranking_rodzaj_rankingu = "deblowy mężczyzn")) and z.id_gracza = zawodnik.id_gracza) as poz2'
+            'where ((płeć = "kobieta" and ranking_rodzaj_rankingu = "deblowy kobiet") or (płeć = "mężczyzna" and ranking_rodzaj_rankingu = "deblowy mężczyzn")) and z.id_gracza = zawodnik.id_gracza and data_do is null) as poz2'
         }
         query_string = query_string + ' from zawodnik z'
         axios.post('/results',{
@@ -1047,29 +1220,42 @@ function ShowResults(){
         })
         .then(function (response){
             var res_str = ""
+            var head = "<tr>"
             for(var i = 0; i < response.data.length; i++){
-                res_str = res_str + response.data[i].imie + ' ' + response.data[i].nazwisko + ' '
+                res_str += "<tr>"
+                if(i == 0) head += "<th>Imię</th><th>Nazwisko</th>"
+                res_str += "<td>" + response.data[i].imie + "</td><td>" + response.data[i].nazwisko + "</td>"
                 if(response.data[i].narodowość != undefined){
-                    res_str = res_str + response.data[i].narodowość + ' ' 
+                    if(i == 0) head += "<th>Narodowość</th>"
+                    res_str += "<td>" + response.data[i].narodowość + "</td>"
                 }
                 if(response.data[i].data_urodzenia!= undefined){
-                    res_str = res_str + response.data[i].data_urodzenia + ' '
+                    if(i == 0) head += "<th>Data urodzenia</th>"
+                    res_str += "<td>" + response.data[i].data_urodzenia + "</td>"
                 }
                 if(response.data[i].wzrost != undefined){
-                    res_str = res_str + response.data[i].wzrost + ' '
+                    if(i == 0) head += "<th>Wzrost</th>"
+                    res_str += "<td>" + response.data[i].wzrost + "</td>"
                 }
                 if(response.data[i].preferowana_ręka != undefined){
-                    res_str = res_str + response.data[i].preferowana_ręka + ' '
+                    if(i == 0) head += "<th>Preferowana ręka</th>"
+                    res_str += "<td>" + response.data[i].preferowana_ręka + "</td>"
                 }
                 if(response.data[i].punkty_singlowe != undefined){
-                    res_str = res_str + response.data[i].punkty_singlowe + ' ' + response.data[i].poz1 + ' '
+                    if(i == 0) head += "<th>Punkty Singlowe</th>"
+                    res_str += "<td>" + response.data[i].punkty_singlowe + "</td>"
                 }
                 if(response.data[i].punkty_deblowe != undefined){
-                    res_str = res_str + response.data[i].punkty_deblowe + ' ' + response.data[i].poz2 + ' '
+                    if(i == 0) head += "<th>Punkty Deblowe</th>"
+                    res_str += "<td>" + response.data[i].punkty_deblowe + "</td>"
                 }
-                res_str = res_str + '\n'
+                res_str += "</tr>"
             }
-            $("#resultsmsg").text(res_str)
+            head += "</tr>"
+            res_str = "<table>" + head + res_str + "</table>"
+            console.log(res_str)
+
+            $("#resultsmsg").html(res_str)
             $("#FindProp").hide()
             $("#Results").show()
             tab = "zawodnik"
@@ -1107,33 +1293,50 @@ function ShowResults(){
             query_str: query_string   
         })
         .then(function (response){
+            var flag = true;
             var res_str = ""
+            var head = "<tr>"
             for(var i = 0; i < response.data.length; i++){
-                res_str = res_str + response.data[i].nazwa + ' ' + response.data[i].rok + ' '
+                if(i == 0) head += "<th>Nazwa</th><th>Rok</th>"
+                res_str += "<td>" + response.data[i].nazwa + "</td><td>" + response.data[i].rok + "</td>"
                 if(response.data[i].ranga != undefined){
-                    res_str = res_str + response.data[i].ranga + ' ' 
+                    if(i == 0) head += "<th>Ranga</th>"
+                    res_str += "<td>" + response.data[i].ranga + "</td>" 
                 }
                 if(response.data[i].nawierzchnia != undefined){
-                    res_str = res_str + response.data[i].nawierzchnia + ' '
+                    if(i == 0) head += "<th>Nawierzchnia</th>"
+                    res_str += "<td>" + response.data[i].nawierzchnia + "</td>" 
                 }
                 if(response.data[i].miasto != undefined){
-                    res_str = res_str + response.data[i].miasto + ' '
+                    if(i == 0) head += "<th>Miasto</th>"
+                    res_str += "<td>" + response.data[i].miasto + "</td>" 
                 }
                 if(response.data[i].kraj != undefined){
-                    res_str = res_str + response.data[i].kraj + ' '
+                    if(i == 0) head += "<th>Kraj</th>"
+                    res_str += "<td>" + response.data[i].kraj + "</td>" 
                 }
                 if(response.data[i].pula_nagród != undefined){
-                    res_str = res_str + response.data[i].pula_nagród + ' '
+                    if(i == 0) head += "<th>Pula nagród</th>"
+                    res_str += "<td>" + response.data[i].pula_nagród + "</td>" 
                 }
                 if(response.data[i].data_rozpoczęcia != undefined){
-                    res_str = res_str + response.data[i].data_rozpoczęcia + ' ' 
+                    if(i == 0) head += "<th>Data rozpoczęcia</th>"
+                    res_str += "<td>" + response.data[i].data_rozpoczęcia + "</td>"  
                 }
                 if(response.data[i].data_zakończenia != undefined){
-                    res_str = res_str + response.data[i].data_zakończenia + ' '
+                    if(flag){
+                        head += "<th>Data zakończenia</th>"
+                        flag = false
+                    }
+                    res_str += "<td>" + response.data[i].data_zakończenia + "</td>" 
                 }
-                res_str = res_str + '\n'
+                res_str += "</tr>"
             }
-            $("#resultsmsg").text(res_str)
+            head += "</tr>"
+            res_str = "<table>" + head + res_str + "</table>"
+            console.log(res_str)
+
+            $("#resultsmsg").html(res_str)
             $("#FindProp").hide()
             $("#Results").show()
             tab = "turniej"
@@ -1144,9 +1347,11 @@ function ShowResults(){
         })
     }
     else if($("#rozstaa").is(':checked') || $("#rezz").is(':checked') || $("#licc").is(':checked')){
-        query_string = query_string + 'turniej_nazwa, turniej_rok, (select imie from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
-        'udzial.zawodnik_id_gracza = u.zawodnik_id_gracza) as imie, (select nazwisko from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
-        'udzial.zawodnik_id_gracza = u.zawodnik_id_gracza) as nazwisko'
+        query_string = query_string + 'turniej_nazwa, turniej_rok, (select distinct imie from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
+        'udzial.zawodnik_id_gracza = u.zawodnik_id_gracza) as imie, (select distinct nazwisko from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza where ' + 
+        'udzial.zawodnik_id_gracza = u.zawodnik_id_gracza) as nazwisko, (select distinct imie from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza2 where ' + 
+        'udzial.zawodnik_id_gracza2 = u.zawodnik_id_gracza2) as imie2, (select distinct nazwisko from zawodnik inner join udzial on zawodnik.id_gracza = udzial.zawodnik_id_gracza2 where ' + 
+        'udzial.zawodnik_id_gracza2 = u.zawodnik_id_gracza2) as nazwisko2'
         if($("#rezz").is(':checked')){
             query_string = query_string + ', rezultat'
         }
@@ -1161,21 +1366,45 @@ function ShowResults(){
             query_str: query_string   
         })
         .then(function (response){
+            var flag = true
+            var flag2 = true
             var res_str = ""
+            var head = "<tr>"
             for(var i = 0; i < response.data.length; i++){
-                res_str = res_str + response.data[i].imie + ' ' + response.data[i].nazwisko + ' ' + response.data[i].turniej_nazwa + ' ' + response.data[i].turniej_rok + ' '
+                res_str += "<tr>"
+                if(i == 0){
+                    head += "<th>Imię</th><th>Nazwisko</th><th>Turniej</th><th>Rok</th>"
+                } 
+                res_str += "<td>" + response.data[i].imie + "</td><td>" + response.data[i].nazwisko + "</td><td>" + response.data[i].turniej_nazwa + "</td><td>" + response.data[i].turniej_rok + "</td>"
+                if(response.data[i].imie2 != undefined){
+                    if(flag2){
+                        head += "<th>Imię</th><th>Nazwisko</th>"
+                        flag2 = false
+                    }
+                    res_str += "<td>" + response.data[i].imie2 + "</td><td>" + response.data[i].nazwisko2 + "</td>"
+                }
                 if(response.data[i].rezultat != undefined){
-                    res_str = res_str + response.data[i].rezultat + ' ' 
+                    if(i == 0) head += "<th>Rezultat</th>"
+                    res_str += "<td>" + response.data[i].rezultat + "</td>"
                 }
                 if(response.data[i].liczba_zdobytych_punktów != undefined){
-                    res_str = res_str + response.data[i].liczba_zdobytych_punktów + ' '
+                    if(i == 0) head += "<th>Liczba zdobytych punktów</th>"
+                    res_str += "<td>" + response.data[i].liczba_zdobytych_punktów + "</td>"
                 }
                 if(response.data[i].rozst != undefined){
-                    res_str = res_str + response.data[i].rozst + ' '
+                    if(flag){
+                        head += "<th>Rozstawienie</th>"
+                        flag = false
+                    }
+                    res_str += "<td>" + response.data[i].rozst + "</td>"
                 }
-                res_str = res_str + '\n'
+                res_str += "</tr>"
             }
-            $("#resultsmsg").text(res_str)
+            head += "</tr>"
+            res_str = "<table>" + head + res_str + "</table>"
+            console.log(res_str)
+
+            $("#resultsmsg").html(res_str)
             $("#FindProp").hide()
             $("#Results").show()
             tab = "udzial"
@@ -1223,11 +1452,13 @@ function HideResults(){
     $("#advpayear").val("")
     $("#advparez").val("")
     $("#advparoz").val("")
-    $("#advmatnaz").val("")
+    $("#advmatnaz5").val("")
     $("#advmatname").val("")
     $("#advmatyear").val("")
     $("#advmatdat").val("")
     $("#advmatnaz2").val("")
+    $("#advmatnaz3").val("")
+    $("#advmatnaz4").val("")
 }
 
 function ShowModOpt(){
@@ -1401,6 +1632,10 @@ function HideInsMa(){
     $("#lastinsma").val("")
     $("#nameinsma2").val("")
     $("#lastinsma2").val("")
+    $("#nameinsma3").val("")
+    $("#lastinsma3").val("")
+    $("#nameinsma4").val("")
+    $("#lastinsma4").val("")
     $("#datainsma").val("")
     $("#sdinsma").val("")
     $("#etainsma").val("")
@@ -1452,8 +1687,8 @@ function ModTo(){
 
 function ModCr(){
     if($("#namemodcr").val() == "" || $("#lastmodcr").val() == "" || $("#namemodcr2").val() == "" || $("#lastmodcr2").val() == "" || $("#rolaodcr").val() == "" || $("#datmodcr").val() == ""){
-        $("#modtomsg").text("Wszystkie obowiązkowe pola muszą być wypełnione.")
-        $("#modtomsg").addClass("alert alert-danger")
+        $("#modcrmsg").text("Wszystkie obowiązkowe pola muszą być wypełnione.")
+        $("#modcrmsg").addClass("alert alert-danger")
         return
     }
     axios.post('/modcr',{
@@ -1486,8 +1721,8 @@ function ModCr(){
 
 function ModCr2(){
     if($("#namemodcr").val() == "" || $("#lastmodcr").val() == "" || $("#namemodcr2").val() == "" || $("#lastmodcr2").val() == "" || $("#datmodcr2").val() == ""){
-        $("#modtomsg").text("Wszystkie obowiązkowe pola muszą być wypełnione.")
-        $("#modtomsg").addClass("alert alert-danger")
+        $("#modcrmsg").text("Wszystkie obowiązkowe pola muszą być wypełnione.")
+        $("#modcrmsg").addClass("alert alert-danger")
         return
     }
     axios.post('/modcr2',{
@@ -1586,8 +1821,8 @@ function InsPl(){
         $("#insplmsg").addClass("alert alert-danger")
         return
     }
-    if(parseInt($("#heiinpl").val()) < 140){
-        $("#insplmsg").text("Zawodnik musi mieć co najmniej 140cm wzrostu")
+    if(parseInt($("#heiinpl").val()) < 140 || parseInt($("#heiinpl").val()) > 250){
+        $("#insplmsg").text("Wzrost zawodnika musi mieścić się w przedziale od 140 do 250cm.")
         $("#insplmsg").addClass("alert alert-danger")
         return
     }
@@ -1655,6 +1890,8 @@ function HideInsPa(){
     $("#inspamsg").removeClass()
     $("#nameinpa").val("")
     $("#lastinpa").val("")
+    $("#nameinpa2").val("")
+    $("#lastinpa2").val("")
     $("#tnameinpa").val("")
     $("#tyearinpa").val("")
     $("#rezinpa").val("")
@@ -1762,11 +1999,23 @@ function InsTo(){
     var data1 = $("#datinto").val()
     var data2 = $("#datinto2").val()
     if($("#datinto2").val() != ""){
-        for(var i = 0; i < data1.length; i++){
-            if(data1[i] > data2[i]){
-                $("#instomsg").text("Data zakończenia musi być późniejsza niż data rozpoczęcia")
+        if(parseInt(data1.slice(0,4)) > parseInt(data2.slice(0,4))){
+            $("#instomsg").text("Data rozpoczęcia musi być wcześniejsza niż data zakończenia")
+            $("#instomsg").addClass("alert alert-danger")
+            return
+        }
+        else if(parseInt(data1.slice(0,4)) == parseInt(data2.slice(0,4))){
+            if(parseInt(data1.slice(5,7)) > parseInt(data2.slice(5,7))){
+                $("#instomsg").text("Data rozpoczęcia musi być wcześniejsza niż data zakończenia")
                 $("#instomsg").addClass("alert alert-danger")
                 return
+            }
+            else if(parseInt(data1.slice(5,7)) == parseInt(data2.slice(5,7))){
+                if(parseInt(data1.slice(8,10)) > parseInt(data2.slice(8,10))){
+                    $("#instomsg").text("Data rozpoczęcia musi być wcześniejsza niż data zakończenia")
+                    $("#instomsg").addClass("alert alert-danger")
+                    return
+                }
             }
         }
     }
@@ -1895,14 +2144,33 @@ function InsPa(){
         $("#inspamsg").addClass("alert alert-danger")
         return
     }
-    if(parseInt($("#numinpa").val()) < 0 || $("#rozinpa").val() < 1){
+    if(parseInt($("#numinpa").val()) < 0 || (parseInt($("#rozinpa").val()) < 1 && $("#rozinpa").val() != "")){
         $("#inspamsg").text("Liczba punktów nie może być mniejsza od 0, a rozstawienie mniejsze od 1.")
         $("#inspamsg").addClass("alert alert-danger")
         return
     }
+    if(($("#nameinpa2").val() != "" || $("#lastinpa2").val() != "") && $("#sindeb").val() == "singlowy"){
+        $("#inspamsg").text("W przypadku udziału singlowego bierze udział tylko 1 zawodnik.")
+        $("#inspamsg").addClass("alert alert-danger")
+        return
+    }
+    if($("#sindeb").val() == "deblowy"){
+        if($("#lastinpa2").val() == "" || $("#nameinpa2").val() == ""){
+            $("#inspamsg").text("W przypadku udziału deblowego konieczne jest wybranie dwóch zawodników")
+            $("#inspamsg").addClass("alert alert-danger")
+            return
+        }
+        if($("#lastinpa2").val() == $("#lastinpa").val() || $("#nameinpa2").val() == $("#nameinpa").val()){
+            $("#inspamsg").text("Zawodnik nie może tworzyć pary sam ze sobą.")
+            $("#inspamsg").addClass("alert alert-danger")
+            return
+        }
+    }
     axios.post('/inspa',{
         imie: $("#nameinpa").val(),
         nazwisko: $("#lastinpa").val(),
+        imie2: $("#nameinpa2").val(),
+        nazwisko2: $("#lastinpa2").val(),
         nazwa: $("#tnameinpa").val(),
         rok: $("#tyearinpa").val(),
         rez: $("#rezinpa").val(),
@@ -1916,6 +2184,8 @@ function InsPa(){
         $("#inspamsg").addClass("alert alert-success")
         $("#nameinpa").val("")
         $("#lastinpa").val("")
+        $("#nameinpa2").val("")
+        $("#lastinpa2").val("")
         $("#tnameinpa").val("")
         $("#tyearinpa").val("")
         $("#rezinpa").val("")
@@ -1974,11 +2244,25 @@ function InsMa(){
         $("#insmamsg").addClass("alert alert-danger")
         return
     }
+    if($("#sdinsma").val() == "singlowy" && ($("#nameinsma3").val() != "" || $("#nameinsma4").val() != "" || $("#lastinsma3").val() != "" || $("#lastinsma4").val() != "")){
+        $("#insmamsg").text("W meczu singlowym bierze udział tylko dwóch zawodników.")
+        $("#insmamsg").addClass("alert alert-danger")
+        return
+    }
+    if($("#sdinsma").val() == "deblowy" && ($("#nameinsma3").val() == "" || $("#nameinsma4").val() == "" || $("#lastinsma3").val() == "" || $("#lastinsma4").val() == "")){
+        $("#insmamsg").text("Należy podać dane wszystkich czterech zawodników.")
+        $("#insmamsg").addClass("alert alert-danger")
+        return
+    }
     axios.post('/insma',{
         imie: $("#nameinsma").val(),
         nazwisko: $("#lastinsma").val(),
         imie2: $("#nameinsma2").val(),
         nazwisko2: $("#lastinsma2").val(),
+        imie3: $("#nameinsma3").val(),
+        nazwisko3: $("#lastinsma3").val(),
+        imie4: $("#nameinsma4").val(),
+        nazwisko4: $("#lastinsma4").val(),
         dat: $("#datainsma").val(),
         sindeb: $("#sdinsma").val(),
         nazwa: $("#tnameinsma").val(),
@@ -1994,6 +2278,10 @@ function InsMa(){
         $("#lastinsma").val("")
         $("#nameinsma2").val("")
         $("#lastinsma2").val("")
+        $("#nameinsma3").val("")
+        $("#lastinsma3").val("")
+        $("#nameinsma4").val("")
+        $("#lastinsma4").val("")
         $("#datainsma").val("")
         $("#sdinsma").val("")
         $("#etainsma").val("")
